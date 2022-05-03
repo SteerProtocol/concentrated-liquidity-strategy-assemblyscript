@@ -1,14 +1,19 @@
 import { Bins, BinsResult } from "./Bins";
-import { Price } from "./Price";
+import { JSONEncoder } from "assemblyscript-json";
+import { BaseStrategy } from '@steerprotocol/base-strategy';
+import { Price } from '@steerprotocol/strategy-utils';
+import { BandsResult, BinStyle} from './types';
 
-export { Bins, BinsResult, Price };
-export class UniswapV3LiquidityStrategy {
+export { Bins, BinsResult, BandsResult, BinStyle };
+
+export class UniswapV3LiquidityStrategy extends BaseStrategy {
   private LIQUIDITY_PRECISION: f32 = 2 ** 16 - 2; 
   private startTick: f32;
   public binWidth: f32 = 600;
   private bins: Bins = [];
 
   constructor(binWidth: f32) {
+    super();
     this.binWidth = binWidth;
   }
 
@@ -133,6 +138,28 @@ export class UniswapV3LiquidityStrategy {
   return positions;
   }
 
+  renderResult(positions: Array<Position>): string {
+    // Create encoder
+    let encoder = new JSONEncoder();
+
+    // Construct necessary object
+    //encoder.pushObject("result");
+
+
+    encoder.pushArray("bins");
+    for (let i = 0; i < positions.length; i++) {
+      encoder.pushObject(null);
+      encoder.setString("lowerBound", positions[i].startTick.toString());
+      encoder.setString("upperBound", positions[i].endTick.toString());
+      encoder.setString("weight", positions[i].weight.toString());
+      encoder.popObject();
+    }
+    encoder.popArray();
+    // Finish object
+    // encoder.popObject();
+
+    return "{" + encoder.toString() + "}";
+  }
 }
 export class Position 
 {

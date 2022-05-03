@@ -1,6 +1,6 @@
 {
   "name": "@steerprotocol/concentrated-liquidity-strategy",
-  "version": "0.0.2",
+  "version": "0.0.8",
   "description": "Concentrated liquidity strategy classes for Steer Finance",
   "main": "assembly/index.ts",
   "types": "assembly/index.ts",
@@ -21,9 +21,13 @@
     "@babel/preset-typescript": "^7.14.5",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
+    "@steerprotocol/base-strategy": "^0.0.2",
+    "@steerprotocol/strategy-utils": "^0.0.1",
     "as-bind": "^0.8.0",
+    "assemblyscript-json": "^1.1.0",
     "commitizen": "^4.2.4",
     "conventional-changelog-conventionalcommits": "^4.6.0",
+    "source-map-support": "^0.5.21",
     "typescript": "^4.3.5"
   },
   "devDependencies": {
