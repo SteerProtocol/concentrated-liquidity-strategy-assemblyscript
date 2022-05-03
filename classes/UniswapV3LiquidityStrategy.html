@@ -67,7 +67,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">UniswapV3LiquidityStrategy</span>
+						<span class="tsd-signature-type">BaseStrategy</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">UniswapV3LiquidityStrategy</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -78,7 +83,7 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="UniswapV3LiquidityStrategy.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="UniswapV3LiquidityStrategy.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -98,6 +103,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="UniswapV3LiquidityStrategy.html#calculateNormalisedBins" class="tsd-kind-icon">calculate<wbr>Normalised<wbr>Bins</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="UniswapV3LiquidityStrategy.html#convertBins" class="tsd-kind-icon">convert<wbr>Bins</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="UniswapV3LiquidityStrategy.html#getTickFromPrice" class="tsd-kind-icon">get<wbr>Tick<wbr>From<wbr>Price</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="UniswapV3LiquidityStrategy.html#renderResult" class="tsd-kind-icon">render<wbr>Result</a></li>
 							</ul>
 						</section>
 					</div>
@@ -105,17 +111,18 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 						<li class="tsd-signature tsd-kind-icon">new <wbr>Uniswap<wbr>V3Liquidity<wbr>Strategy<span class="tsd-signature-symbol">(</span>binWidth<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="UniswapV3LiquidityStrategy.html" class="tsd-signature-type" data-tsd-kind="Class">UniswapV3LiquidityStrategy</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Overrides BaseStrategy.constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/19bdfa7/assembly/index.ts#L11">index.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L15">index.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -137,7 +144,7 @@
 					<div class="tsd-signature tsd-kind-icon">LIQUIDITY_<wbr>PRECISION<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/19bdfa7/assembly/index.ts#L6">index.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L10">index.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -147,7 +154,7 @@
 					<div class="tsd-signature tsd-kind-icon">bin<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 600</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/19bdfa7/assembly/index.ts#L8">index.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L12">index.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -157,7 +164,7 @@
 					<div class="tsd-signature tsd-kind-icon">bins<span class="tsd-signature-symbol">:</span> <a href="../modules.html#Bins" class="tsd-signature-type" data-tsd-kind="Type alias">Bins</a><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/19bdfa7/assembly/index.ts#L9">index.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L13">index.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -167,7 +174,7 @@
 					<div class="tsd-signature tsd-kind-icon">start<wbr>Tick<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/19bdfa7/assembly/index.ts#L7">index.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L11">index.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -184,7 +191,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/19bdfa7/assembly/index.ts#L67">index.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L72">index.ts:72</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -213,7 +220,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/19bdfa7/assembly/index.ts#L15">index.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L20">index.ts:20</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -233,19 +240,19 @@
 					<a name="calculateNormalisedBins" class="tsd-anchor"></a>
 					<h3>calculate<wbr>Normalised<wbr>Bins</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">calculate<wbr>Normalised<wbr>Bins<span class="tsd-signature-symbol">(</span>prices<span class="tsd-signature-symbol">: </span><a href="Price.html" class="tsd-signature-type" data-tsd-kind="Class">Price</a><span class="tsd-signature-symbol">[]</span>, upper<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, lower<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="BinsResult.html" class="tsd-signature-type" data-tsd-kind="Class">BinsResult</a></li>
+						<li class="tsd-signature tsd-kind-icon">calculate<wbr>Normalised<wbr>Bins<span class="tsd-signature-symbol">(</span>prices<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Price</span><span class="tsd-signature-symbol">[]</span>, upper<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, lower<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="BinsResult.html" class="tsd-signature-type" data-tsd-kind="Class">BinsResult</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/19bdfa7/assembly/index.ts#L74">index.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L79">index.ts:79</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>prices: <a href="Price.html" class="tsd-signature-type" data-tsd-kind="Class">Price</a><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>prices: <span class="tsd-signature-type">Price</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
 									<h5>upper: <span class="tsd-signature-type">number</span></h5>
@@ -268,7 +275,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/19bdfa7/assembly/index.ts#L125">index.ts:125</a></li>
+									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L130">index.ts:130</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -291,7 +298,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/19bdfa7/assembly/index.ts#L120">index.ts:120</a></li>
+									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L125">index.ts:125</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -301,6 +308,29 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="renderResult" class="tsd-anchor"></a>
+					<h3>render<wbr>Result</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Result<span class="tsd-signature-symbol">(</span>positions<span class="tsd-signature-symbol">: </span><a href="Position.html" class="tsd-signature-type" data-tsd-kind="Class">Position</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/blob/000576a/assembly/index.ts#L141">index.ts:141</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>positions: <a href="Position.html" class="tsd-signature-type" data-tsd-kind="Class">Position</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -316,21 +346,21 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="../enums/BinStyle.html" class="tsd-kind-icon">Bin<wbr>Style</a>
+					</li>
 					<li class=" tsd-kind-class">
 						<a href="BinsResult.html" class="tsd-kind-icon">Bins<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="Position.html" class="tsd-kind-icon">Position</a>
 					</li>
-					<li class=" tsd-kind-class">
-						<a href="Price.html" class="tsd-kind-icon">Price</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
 						<a href="UniswapV3LiquidityStrategy.html" class="tsd-kind-icon">Uniswap<wbr>V3Liquidity<wbr>Strategy</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="UniswapV3LiquidityStrategy.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
@@ -360,10 +390,16 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="UniswapV3LiquidityStrategy.html#getTickFromPrice" class="tsd-kind-icon">get<wbr>Tick<wbr>From<wbr>Price</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="UniswapV3LiquidityStrategy.html#renderResult" class="tsd-kind-icon">render<wbr>Result</a>
+							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-type-alias">
+						<a href="../modules.html#BandsResult" class="tsd-kind-icon">Bands<wbr>Result</a>
+					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../modules.html#Bins" class="tsd-kind-icon">Bins</a>
 					</li>
