@@ -76,7 +76,7 @@ export class UniswapV3LiquidityStrategy extends BaseStrategy {
     );
   }
 
-  calculateNormalisedBins(prices: Array<Price>, upper: f32, lower: f32): BinsResult {
+  calculateNormalizedBins(prices: Array<Price>, upper: f32, lower: f32): BinsResult {
     const bins: Bins = [];
     let upperTick = this.getTickFromPrice(upper);
     let lowerTick = this.getTickFromPrice(lower);
