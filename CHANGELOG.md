@@ -1,3 +1,10 @@
+## 1.0.0 (2022-05-10)
+
+
+### Features
+
+* :sparkles: add getPositions helper function ([149c3dc](https://github.com/SteerProtocol/concentrated-liquidity-strategy-assemblyscript/commit/149c3dcaf9a7c98b54b65dbccf31db24531b7464))
+
 ## 1.0.0-alpha.1 (2021-12-09)
 
 
