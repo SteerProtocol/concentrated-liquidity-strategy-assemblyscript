@@ -160,6 +160,11 @@ export class UniswapV3LiquidityStrategy extends BaseStrategy {
 
     return "{" + encoder.toString() + "}";
   }
+
+  getPositions(upper: f32, lower: f32): Position[] {
+    const binsResult = this.calculateBins(upper, lower);
+    return this.convertBins(binsResult);
+  }
 }
 export class Position 
 {
