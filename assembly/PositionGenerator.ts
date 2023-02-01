@@ -20,20 +20,35 @@ export class PositionGenerator {
     return numerator / denominator;
   }
 
-  private segmentize(): number[] {
-    const step = (4 * this.stdDeviation) / this.segments;
-    const xMin = this.mean - 2 * this.stdDeviation;
-    const xMax = this.mean + 2 * this.stdDeviation;
-    const xValues = new Array(this.segments + 1).map((_, i) => xMin + i * step);
-    return xValues.map((x) => this.normalize(x));
+  private segmentize(): Array<f64> {
+    let step: f64 = (4.0 * this.stdDeviation) / this.segments;
+    let xMin: f64 = this.mean - 2.0 * this.stdDeviation;
+    let xMax: f64 = this.mean + 2.0 * this.stdDeviation;
+    let xValuesArray = new Array<f64>(i32(this.segments) + i32(1));
+    for (let i: i32 = 0; i < xValuesArray.length; i++) {
+      xValuesArray[i] = xMin + i * step;
+    }
+    let xValues: Array<f64> = [];
+    for (let i: i32 = 0; i < xValuesArray.length; i++) {
+      xValues[i] = xValuesArray[i];
+    }
+    let normalizedXValues: Array<f64> = [];
+    for (let i: i32 = 0; i < xValues.length; i++) {
+      normalizedXValues[i] = this.normalize(xValues[i]);
+    }
+    return normalizedXValues;
   }
 
   private floatToUint16(value: number): number {
     return value < 0 ? 0 : value > 65535 ? 65535 : Math.floor(value);
   }
 
-  private convertSegmentsToWeights(segments: number[]): number[] {
-    return segments.map((val) => this.floatToUint16(val * 10000));
+  private convertSegmentsToWeights(segments: Array<f64>): Array<u16> {
+    let weights: Array<u16> = [];
+    for (let i: i32 = 0; i < segments.length; i++) {
+      weights[i] = u16(this.floatToUint16(segments[i] * 10000.0));
+    }
+    return weights;
   }
 
   private createPositionByBounds(
@@ -58,12 +73,11 @@ export class PositionGenerator {
   }
 
   public generate(
-    upperBound: number,
-    lowerBound: number,
+    upperBound: i32,
+    lowerBound: i32,
     width: number,
     style: PositionStyle
   ): Position[] {
-
     switch (style) {
       case PositionStyle.ABSOLUTE:
         return [new Position(lowerBound, upperBound, 1)];
@@ -75,9 +89,15 @@ export class PositionGenerator {
         );
         const weights = this.convertSegmentsToWeights(this.segmentize());
 
-        return segments.map((segment, index) => {
-          return new Position(segment[0], segment[1], weights[index]);
-        });
+        let positions: Array<Position> = [];
+        for (let i: i32 = 0; i < segments.length; i++) {
+          let segment = segments[i];
+          let startBound = i32(segment[0]);
+          let endBound = i32(segment[1]);
+          let weight = i32(weights[i]);
+          positions[i] = new Position(startBound, endBound, weight);
+        }
+        return positions;
       }
       default:
         throw new Error("Position style not supported");
