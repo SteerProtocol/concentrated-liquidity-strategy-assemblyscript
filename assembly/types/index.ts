@@ -1,1 +1,1 @@
-export * from './BinTypes';
+export * from './PostitionStyle';
