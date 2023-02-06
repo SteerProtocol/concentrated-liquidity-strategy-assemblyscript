@@ -1,4 +1,4 @@
-import { Position } from "@steerprotocol/strategy-utils";
+import { Position } from "@steerprotocol/strategy-utils/assembly";
 
 export function getTickSpacing(poolFee: i32): i32 {
   let spacing = 0;

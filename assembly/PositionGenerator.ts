@@ -1,4 +1,4 @@
-import { Position } from "@steerprotocol/strategy-utils";
+import { Position } from "@steerprotocol/strategy-utils/assembly";
 import { PositionStyle } from "./types";
 
 export class PositionGenerator {

@@ -1,4 +1,4 @@
-import { BaseStrategy } from '@steerprotocol/base-strategy';
+import { BaseStrategy } from '@steerprotocol/base-strategy/assembly';
 
 export class UniswapV3LiquidityStrategy extends BaseStrategy {
   private LIQUIDITY_PRECISION: f32 = 2 ** 16 - 2; 
