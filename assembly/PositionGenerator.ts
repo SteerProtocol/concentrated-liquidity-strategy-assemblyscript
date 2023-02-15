@@ -20,11 +20,11 @@ export class PositionGenerator {
     return numerator / denominator;
   }
 
-  private segmentize(): Array<f64> {
-    let step: f64 = (4.0 * this.stdDeviation) / this.segments;
+  private segmentize(totalSegments: number): Array<f64> {
+    let step: f64 = (4.0 * this.stdDeviation) / totalSegments;
     let xMin: f64 = this.mean - 2.0 * this.stdDeviation;
     let xMax: f64 = this.mean + 2.0 * this.stdDeviation;
-    let xValuesArray = new Array<f64>(i32(this.segments) + i32(1));
+    let xValuesArray = new Array<f64>(i32(totalSegments) + i32(1));
     for (let i: i32 = 0; i < xValuesArray.length; i++) {
       xValuesArray[i] = xMin + i * step;
     }
@@ -87,7 +87,7 @@ export class PositionGenerator {
           lowerBound,
           width
         );
-        const weights = this.convertSegmentsToWeights(this.segmentize());
+        const weights = this.convertSegmentsToWeights(this.segmentize(segments.length));
 
         let positions: Array<Position> = [];
         for (let i: i32 = 0; i < segments.length; i++) {
