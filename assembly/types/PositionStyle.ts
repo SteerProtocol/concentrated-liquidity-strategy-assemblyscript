@@ -1,0 +1,17 @@
+export const enum PositionStyle {
+    Absolute,
+    Normalized,
+    Sigmoid,
+    ExponentialDecay,
+    Logarithmic,
+    PowerLaw,
+    Step,
+    Sine,
+    Triangle,
+    Quadratic,
+    Cubic,
+    ExponentialGrowth,
+    LogarithmicDecay,
+    Sawtooth,
+    SquareWave,
+}

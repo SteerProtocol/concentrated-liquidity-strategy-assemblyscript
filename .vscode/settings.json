@@ -4,5 +4,8 @@
         "devops",
         "Fixed EMA"
     ],
-    "jest.jestCommandLine": "yarn test"
+    "jest.jestCommandLine": "yarn test",
+    "cSpell.words": [
+        "segmentize"
+    ]
 }
