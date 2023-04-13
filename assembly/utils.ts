@@ -24,9 +24,9 @@ export function renderULMResult(
   totalLiquidity1e4: number
 ): string {
   // Construct necessary object
-  const lowerTicks: Array<i32> = [];
-  const upperTicks: Array<i32> = [];
-  const weights: Array<i32> = [];
+  const lowerTicks: Array<i64> = [];
+  const upperTicks: Array<i64> = [];
+  const weights: Array<i64> = [];
 
   for (let i = 0; i < positions.length; i++) {
     lowerTicks.push(positions[i].startTick);

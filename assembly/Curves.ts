@@ -1,3 +1,5 @@
+import { JSON } from "json-as/assembly";
+
 import {
   ExponentialDecayOptions,
   NormalOptions,
@@ -13,86 +15,119 @@ import {
   LogarithmicDecayOptions,
   SawtoothOptions,
   SquareWaveOptions,
+  PositionStyle,
 } from "./types";
+import { PositionGenerator } from "./PositionGenerator";
+import { Position } from "@steerprotocol/strategy-utils/assembly";
 
 export class Curves {
-  static normal(t: f64, options: NormalOptions): f64 {
+  static exponentialDecay(x: f64, options: ExponentialDecayOptions): f64 {
+    const rate = options.rate || 1;
+    return Math.exp(-rate * x);
+  }
+
+  static normal(x: f64, options: NormalOptions): f64 {
+    const mean = options.mean || 0;
+    const stdDev = options.stdDev || 1;
     return (
-      Math.exp(-0.5 * Math.pow((t - options.peak) / options.stdDev, 2)) * 10000
+      (1 / (stdDev * Math.sqrt(2 * Math.PI))) *
+      Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2))
     );
   }
 
-  static sigmoid(t: f64, options: SigmoidOptions): f64 {
-    return (1 / (1 + Math.exp(-options.steepness * (t - 0.5)))) * 10000;
+  static sigmoid(x: f64, options: SigmoidOptions): f64 {
+    const k = options.k || 1;
+    return 1 / (1 + Math.exp(-k * x));
   }
 
-  static exponentialDecay(t: f64, options: ExponentialDecayOptions): f64 {
-    return Math.exp(-options.rate * t) * 10000;
+  static logarithmic(x: f64, options: LogarithmicOptions): f64 {
+    const base = options.base || Math.E;
+    if (x < 0) {
+      const absX = Math.abs(x);
+      const argX = Math.atan2(0, x);
+      return (
+        Math.log(absX) / Math.log(base) +
+        (argX / (2 * Math.PI)) * Math.log(base)
+      );
+    } else if (x == 0) {
+      return 0;
+    } else {
+      return Math.log(x) / Math.log(base);
+    }
   }
 
-  static logarithmic(t: f64, options: LogarithmicOptions): f64 {
-    return Math.log(options.base + t * 100) * 10000;
+  static powerLaw(x: f64, options: PowerLawOptions): f64 {
+    const exponent = options.exponent || 1;
+    return Math.pow(x, exponent);
   }
 
-  static powerLaw(t: f64, options: PowerLawOptions): f64 {
-    return Math.pow(t, options.exponent) * 10000;
+  static step(x: f64, options: StepOptions): f64 {
+    const threshold = options.threshold || 0;
+    return x < threshold ? 0 : 1;
   }
 
-  static step(t: f64, options: StepOptions): f64 {
-    return t < options.threshold ? 0 : 10000;
+  static sine(x: f64, options: SineOptions): f64 {
+    const amplitude = options.amplitude || 1;
+    const frequency = options.frequency || 1;
+    const phase = options.phase || 0;
+    return amplitude * Math.sin(2 * Math.PI * frequency * x + phase);
   }
 
-  static sine(t: f64, options: SineOptions): f64 {
+  static triangle(x: f64, options: TriangleOptions): f64 {
+    const amplitude = options.amplitude || 1;
+    const period = options.period || Math.PI * 2;
+    const phase = options.phase || 0;
+    const t = (x - phase) % period;
+    const adjustedT = t + (t < 0 ? period : 0);
     return (
-      options.amplitude *
-        Math.sin(options.frequency * t * 2 * Math.PI + options.phase) +
-      10000
+      ((2 * amplitude) / period) *
+        (period / 2 - Math.abs(adjustedT - period / 2)) -
+      amplitude
     );
   }
 
-  static triangle(t: f64, options: TriangleOptions): f64 {
-    return (
-      options.amplitude *
-        (2 * Math.abs(((options.frequency * t + options.phase) % 1) - 0.5) -
-          0.5) +
-      10000
-    );
+  static quadratic(x: f64, options: QuadraticOptions): f64 {
+    const a = options.a || 1;
+    const b = options.b || 0;
+    const c = options.c || 0;
+    return a * Math.pow(x, 2) + b * x + c;
   }
 
-  static quadratic(t: f64, options: QuadraticOptions): f64 {
-    return (options.a * Math.pow(t, 2) + options.b * t + options.c) * 10000;
+  static cubic(x: f64, options: CubicOptions): f64 {
+    const a = options.a || 1;
+    const b = options.b || 0;
+    const c = options.c || 0;
+    const d = options.d || 0;
+    return a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x + d;
   }
 
-  static cubic(t: f64, options: CubicOptions): f64 {
-    return (
-      options.a * Math.pow(t, 3) +
-      options.b * Math.pow(t, 2) +
-      options.c * t +
-      options.d
-    ) * 10000;
+  static exponentialGrowth(x: f64, options: ExponentialGrowthOptions): f64 {
+    const rate = options.rate || 1;
+    return Math.exp(rate * x);
   }
 
-  static exponentialGrowth(t: f64, options: ExponentialGrowthOptions): f64 {
-    return Math.exp(options.rate * t) * 10000;
+  static logarithmicDecay(x: f64, options: LogarithmicDecayOptions): f64 {
+    const rate = options.rate || 1;
+    const base = options.base || Math.E;
+    return Math.pow(base, -rate * x);
   }
 
-  static logarithmicDecay(t: f64, options: LogarithmicDecayOptions): f64 {
-    return Math.log(options.base + (1 - t) * 100) * 10000;
+  static sawtooth(x: number, options: SawtoothOptions): number {
+    const amplitude = options.amplitude || 1;
+    const period = options.period || Math.PI * 2;
+    const phase = options.phase || 0;
+    const t = (x - phase) % period;
+    const adjustedT = t + (t < 0 ? period : 0);
+    return ((2 * amplitude) / period) * adjustedT - amplitude;
   }
 
-  static sawtooth(t: f64, options: SawtoothOptions): f64 {
-    return (
-      options.amplitude *
-        (2 * (((options.frequency * t + options.phase) % 1) - 0.5)) +
-      10000
-    );
-  }
-
-  static squareWave(t: f64, options: SquareWaveOptions): f64 {
-    const positionInPeriod = (options.frequency * t + options.phase) % 1;
-    return (
-      (positionInPeriod < options.dutyCycle ? options.amplitude : -options.amplitude) +
-      10000
-    );
+  static squareWave(x: f64, options: SquareWaveOptions): f64 {
+    const amplitude = options.amplitude || 1;
+    const period = options.period || Math.PI * 2;
+    const phase = options.phase || 0;
+    return Math.sin((2 * Math.PI * (x + phase)) / period) >= 0
+      ? amplitude
+      : -amplitude;
   }
 }
+

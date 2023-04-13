@@ -1,155 +1,835 @@
 import { Position } from "@steerprotocol/strategy-utils/assembly";
-import { CubicOptions, ExponentialGrowthOptions, LogarithmicDecayOptions, NormalOptions, PositionStyle, QuadraticOptions, SawtoothOptions, SquareWaveOptions } from "./types";
 import { JSON } from "json-as/assembly";
 import { Curves } from "./Curves";
 import {
-  SigmoidOptions,
+  CubicOptions,
+  CurvesConfigHelper,
   ExponentialDecayOptions,
+  ExponentialGrowthOptions,
+  LogarithmicDecayOptions,
   LogarithmicOptions,
+  NormalOptions,
+  PositionStyle,
+  PositionStyleLookup,
   PowerLawOptions,
-  StepOptions,
+  QuadraticOptions,
+  SawtoothOptions,
+  SigmoidOptions,
   SineOptions,
+  SquareWaveOptions,
+  StepOptions,
   TriangleOptions,
 } from "./types";
 
 export class PositionGenerator {
-
   constructor() {}
 
-  segmentize(
-    numSegments: i32,
-    curveType: PositionStyle,
+  public generate(
+    upperBound: number,
+    lowerBound: number,
+    segmentWidth: number,
+    style: PositionStyle,
     options: string
-  ): Array<f64> {
-    const curve: Array<f64> = [];
-    const interval = 1 / numSegments;
+  ): Array<Position> {
+    const numberOfPoints = 200;
+    const positions: Array<Position> = [];
+    const weights: Array<f64> = [];
+    let minY = Infinity;
 
-    for (let i = 0; i <= numSegments; i++) {
-      const t = i * interval;
+    for (
+      let i = Math.ceil(lowerBound / segmentWidth) * segmentWidth;
+      i < upperBound;
+      i += segmentWidth
+    ) {
+      const startx = i;
+      const endx = startx + segmentWidth;
       let y: f64;
-      switch (curveType) {
+
+      switch (style) {
+        case PositionStyle.Absolute:
+        case PositionStyle.Linear:
+          y = 10000;
+          break;
         case PositionStyle.Normalized:
-          y = Curves.normal(t, JSON.parse<NormalOptions>(options));
+          y = Curves.normal(startx, JSON.parse<NormalOptions>(options));
           break;
         case PositionStyle.Sigmoid:
-          y = Curves.sigmoid(t, JSON.parse<SigmoidOptions>(options))
+          y = Curves.sigmoid(startx, JSON.parse<SigmoidOptions>(options));
           break;
         case PositionStyle.ExponentialDecay:
-          y = Curves.exponentialDecay(t, JSON.parse<ExponentialDecayOptions>(options))
+          y = Curves.exponentialDecay(
+            startx,
+            JSON.parse<ExponentialDecayOptions>(options)
+          );
           break;
         case PositionStyle.Logarithmic:
-          y = Curves.logarithmic(t, JSON.parse<LogarithmicOptions>(options))
+          y = Curves.logarithmic(
+            startx,
+            JSON.parse<LogarithmicOptions>(options)
+          );
           break;
         case PositionStyle.PowerLaw:
-          y = Curves.powerLaw(t, JSON.parse<PowerLawOptions>(options))
+          y = Curves.powerLaw(startx, JSON.parse<PowerLawOptions>(options));
           break;
         case PositionStyle.Step:
-          y = Curves.step(t, JSON.parse<StepOptions>(options))
+          y = Curves.step(startx, JSON.parse<StepOptions>(options));
           break;
         case PositionStyle.Sine:
-          y = Curves.sine(t, JSON.parse<SineOptions>(options))
+          y = Curves.sine(startx, JSON.parse<SineOptions>(options));
           break;
         case PositionStyle.Triangle:
-          y = Curves.triangle(t, JSON.parse<TriangleOptions>(options))
+          y = Curves.triangle(startx, JSON.parse<TriangleOptions>(options));
           break;
         case PositionStyle.Quadratic:
-          y = Curves.quadratic(t, JSON.parse<QuadraticOptions>(options));
+          y = Curves.quadratic(startx, JSON.parse<QuadraticOptions>(options));
           break;
         case PositionStyle.Cubic:
-          y = Curves.cubic(t, JSON.parse<CubicOptions>(options));
+          y = Curves.cubic(startx, JSON.parse<CubicOptions>(options));
           break;
         case PositionStyle.ExponentialGrowth:
-          y = Curves.exponentialGrowth(t, JSON.parse<ExponentialGrowthOptions>(options));
+          y = Curves.exponentialGrowth(
+            startx,
+            JSON.parse<ExponentialGrowthOptions>(options)
+          );
           break;
         case PositionStyle.LogarithmicDecay:
-          y = Curves.logarithmicDecay(t, JSON.parse<LogarithmicDecayOptions>(options));
+          y = Curves.logarithmicDecay(
+            startx,
+            JSON.parse<LogarithmicDecayOptions>(options)
+          );
           break;
         case PositionStyle.Sawtooth:
-          y = Curves.sawtooth(t, JSON.parse<SawtoothOptions>(options));
+          y = Curves.sawtooth(startx, JSON.parse<SawtoothOptions>(options));
           break;
         case PositionStyle.SquareWave:
-          y = Curves.squareWave(t, JSON.parse<SquareWaveOptions>(options));
+          y = Curves.squareWave(startx, JSON.parse<SquareWaveOptions>(options));
           break;
         default:
           y = 0;
           break;
       }
 
-      curve.push(y);
+      weights.push(y);
+      const newPosition = new Position(i32(startx), i32(endx), i32(y));
+      positions.push(newPosition);
     }
 
-    return curve;
-  }
+    const scalingFactor: f64 = 0.0001;
+    const newMin: f64 = 1; // Set your desired minimum value
+    const newMax: f64 = 10000; // Set your desired maximum value
+    let maxWeight: f64 = -Infinity;
 
-  private floatToUint16(value: number): number {
-    return value < 0 ? 0 : value > 65535 ? 65535 : Math.floor(value);
-  }
-
-  private convertSegmentsToWeights(segments: Array<f64>): Array<u16> {
-    let weights: Array<u16> = [];
-    for (let i: i32 = 0; i < segments.length; i++) {
-      weights[i] = u16(this.floatToUint16(segments[i] * 10000.0));
-    }
-    return weights;
-  }
-
-  private createPositionByBounds(
-    upperBound: number,
-    lowerBound: number,
-    width: number
-  ): number[][] {
-    let segments: number[][] = [];
-    let currentStart = lowerBound;
-
-    while (currentStart + width <= upperBound) {
-      let currentEnd = currentStart + width;
-      segments.push([currentStart, currentEnd]);
-      currentStart = currentEnd;
+    for (let i = 0; i < weights.length; i++) {
+      const weight = weights[i];
+      minY = Math.min(minY, weight);
+      maxWeight = Math.max(maxWeight, weight);
     }
 
-    if (currentStart < upperBound) {
-      segments.push([currentStart, upperBound]);
+    // Normalize positions based on minY, newMin, and newMax
+    for (let i = 0; i < positions.length; i++) {
+      const normalizedWeight = i32(
+        ((weights[i] - minY) * (newMax - newMin)) / (maxWeight - minY) + newMin
+      );
+      positions[i].weight = normalizedWeight;
     }
 
-    return segments;
+    return positions;
   }
 
-  public generate(
-    upperBound: i32,
-    lowerBound: i32,
-    width: number,
-    style: PositionStyle,
-    options: string
-  ): Position[] {
-    switch (style) {
+  static applyLiquidityShape(
+    upperTick: number,
+    lowerTick: number,
+    configJson: CurvesConfigHelper,
+    binWidth: i32
+  ): Array<Position> {
+    const positionGenerator = new PositionGenerator();
+    let positions = new Array<Position>();
+    switch (configJson.liquidityShape) {
       case PositionStyle.Absolute:
-        return [new Position(lowerBound, upperBound, 1)];
+      case PositionStyle.Linear:
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          ""
+        );
+        break;
       case PositionStyle.Normalized: {
-        const segments = this.createPositionByBounds(
-          upperBound,
-          lowerBound,
-          width
+        const options = new NormalOptions();
+        options.mean = configJson.mean;
+        options.stdDev = configJson.stdDev;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
         );
-        const weights = this.convertSegmentsToWeights(
-          this.segmentize(segments.length, style, options)
-        );
-        let positions: Array<Position> = [];
-        for (let i: i32 = 0; i < segments.length; i++) {
-          let segment = segments[i];
-          let startBound = i32(segment[0]);
-          let endBound = i32(segment[1]);
-          let weight = i32(weights[i]);
-          positions[i] = new Position(startBound, endBound, weight);
-        }
-        return positions;
       }
-      default:
-        throw new Error("Position style not supported");
+      case PositionStyle.Sigmoid: {
+        const options = new SigmoidOptions();
+        options.k = configJson.k;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+      }
+      case PositionStyle.ExponentialDecay: {
+        const options = new ExponentialDecayOptions();
+        options.rate = configJson.rate;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.Logarithmic: {
+        const options = new LogarithmicOptions();
+        options.base = configJson.base;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.PowerLaw: {
+        const options = new PowerLawOptions();
+        options.exponent = configJson.exponent;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.Step: {
+        const options = new StepOptions();
+        options.threshold = configJson.threshold;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.Sine: {
+        const options = new SineOptions();
+        options.amplitude = configJson.amplitude;
+        options.phase = configJson.phase;
+        options.frequency = configJson.frequency;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.Triangle: {
+        const options = new TriangleOptions();
+        options.amplitude = configJson.amplitude;
+        options.phase = configJson.phase;
+        options.period = configJson.period;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.Quadratic: {
+        const options = new QuadraticOptions();
+        options.a = configJson.a;
+        options.b = configJson.b;
+        options.c = configJson.c;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.Cubic: {
+        const options = new CubicOptions();
+        options.a = configJson.a;
+        options.b = configJson.b;
+        options.c = configJson.c;
+        options.d = configJson.d;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.ExponentialGrowth: {
+        const options = new ExponentialGrowthOptions();
+        options.rate = configJson.rate;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.LogarithmicDecay: {
+        const options = new LogarithmicDecayOptions();
+        options.base = configJson.base;
+        options.rate = configJson.rate;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.Sawtooth: {
+        const options = new SawtoothOptions();
+        options.amplitude = configJson.amplitude;
+        options.phase = configJson.phase;
+        options.period = configJson.period;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
+      case PositionStyle.SquareWave: {
+        const options = new SquareWaveOptions();
+        options.amplitude = configJson.amplitude;
+        options.period = configJson.period;
+        options.phase = configJson.phase;
+        positions = positionGenerator.generate(
+          i32(upperTick),
+          i32(lowerTick),
+          binWidth,
+          configJson.liquidityShape,
+          JSON.stringify(options)
+        );
+        break;
+      }
     }
+    return positions;
+  }
+
+  static propertyHelper(omit: PositionStyle[] = []): string {
+    const curveList = [
+      PositionStyle.Normalized,
+      PositionStyle.Linear,
+      PositionStyle.ExponentialDecay,
+      PositionStyle.Sigmoid,
+      PositionStyle.Logarithmic,
+      PositionStyle.PowerLaw,
+      PositionStyle.Step,
+      PositionStyle.Sine,
+      PositionStyle.Triangle,
+      PositionStyle.Quadratic,
+      PositionStyle.Cubic,
+      PositionStyle.ExponentialGrowth,
+      PositionStyle.LogarithmicDecay,
+      PositionStyle.Sawtooth,
+      PositionStyle.SquareWave,
+    ];
+
+    const filteredCurves: string[] = [];
+    for(let curve = 0; curve < curveList.length; curve++){
+      if (!omit.includes(curveList[curve])) {
+        filteredCurves.push(PositionStyleLookup(curveList[curve]));
+      }
+    }
+
+    return `"liquidityShape": {
+      "enum": ${JSON.stringify(filteredCurves)},
+      "title": "Liquidity Shape",
+      "type": "string",
+      "default": "Linear"
+    }`;
+  }
+
+  static allOf(): string {
+    return `{
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "Linear"
+        }
+      }
+    },
+    "then": {
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "Normalized"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "mean": {
+          "type": "number",
+          "title": "Mean"
+        },
+        "stdDev": {
+          "type": "number",
+          "title": "Standard Deviation"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "mean",
+        "stdDev"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "ExponentialDecay"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "rate": {
+          "type": "number",
+          "title": "Rate"
+        }
+      },
+      "required": [
+        "rate"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "Sigmoid"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "k": {
+          "type": "number",
+          "title": "K"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "k"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "Logarithmic"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "base": {
+          "type": "number",
+          "title": "Base"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "base"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "PowerLaw"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "exponent": {
+          "type": "number",
+          "title": "Exponent"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "exponent"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "Step"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "threshold": {
+          "type": "number",
+          "title": "Threshold"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "threshold"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "Sine"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "amplitude": {
+          "type": "number",
+          "title": "Amplitude"
+        },
+        "frequency": {
+          "type": "number",
+          "title": "Frequency"
+        },
+        "phase": {
+          "type": "number",
+          "title": "Phase"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "amplitude",
+        "frequency",
+        "phase"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "Triangle"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "amplitude": {
+          "type": "number",
+          "title": "Amplitude"
+        },
+        "period": {
+          "type": "number",
+          "title": "Period"
+        },
+        "phase": {
+          "type": "number",
+          "title": "Phase"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "amplitude",
+        "period",
+        "phase"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "Quadratic"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "a": {
+          "type": "number",
+          "title": "A"
+        },
+        "b": {
+          "type": "number",
+          "title": "B"
+        },
+        "c": {
+          "type": "number",
+          "title": "C"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "a",
+        "b",
+        "c"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "Cubic"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "a": {
+          "type": "number",
+          "title": "A"
+        },
+        "b": {
+          "type": "number",
+          "title": "B"
+        },
+        "c": {
+          "type": "number",
+          "title": "C"
+        },
+        "d": {
+          "type": "number",
+          "title": "D"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "ExponentialGrowth"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "rate": {
+          "type": "number",
+          "title": "Rate"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "rate"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "LogarithmicDecay"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "rate": {
+          "type": "number",
+          "title": "Rate"
+        },
+        "base": {
+          "type": "number",
+          "title": "Base"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "rate",
+        "base"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "Sawtooth"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "amplitude": {
+          "type": "number",
+          "title": "Amplitude"
+        },
+        "period": {
+          "type": "number",
+          "title": "Period"
+        },
+        "phase": {
+          "type": "number",
+          "title": "Phase"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "amplitude",
+        "period",
+        "phase"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
+          "const": "SquareWave"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "binSizeMultiplier": {
+          "type": "number",
+          "title": "Position Scale"
+        },
+        "amplitude": {
+          "type": "number",
+          "title": "Amplitude"
+        },
+        "period": {
+          "type": "number",
+          "title": "Period"
+        },
+        "phase": {
+          "type": "number",
+          "title": "Phase"
+        }
+      },
+      "required": [
+        "binSizeMultiplier",
+        "amplitude",
+        "period",
+        "phase"
+      ]
+    }
+  },
+  {
+    "required": [
+      "liquidityShape"
+    ]
+  }`;
   }
 }
 
-export function generatePositions(upperBound: number, lowerBound: number, width: number, style: PositionStyle, options: string): Position[] {
+export function generatePositions(
+  upperBound: number,
+  lowerBound: number,
+  width: number,
+  style: PositionStyle,
+  options: string
+): String {
   const generator = new PositionGenerator();
-  return generator.generate(i32(upperBound), i32(lowerBound), width, style, options);
-}  
+  const positions = generator.generate(
+    i32(upperBound),
+    i32(lowerBound),
+    width,
+    style,
+    options
+  );
+  return JSON.stringify(positions);
+}

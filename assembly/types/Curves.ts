@@ -1,59 +1,59 @@
+import {JSON} from 'json-as/assembly'
+import { PositionStyle } from './PositionStyle';
 
-import { JSON } from 'json-as/assembly';
+@json
+export class ExponentialDecayOptions {
+  rate: f64 = 0;
+}
 
 @json
 export class NormalOptions {
-  peak: f64 = 0.0;
-  stdDev: f64 = 0.0;
+  mean: f64 = 0;
+  stdDev: f64 = 0;
 }
 
 @json
 export class SigmoidOptions {
-  steepness: f64 = 0.0;
-}
-
-@json
-export class ExponentialDecayOptions {
-  rate: f64 = 0.0;
+  k: f64 = 0;
 }
 
 @json
 export class LogarithmicOptions {
-  base: f64 = 0.0;
+  base: f64 = 0;
 }
 
 @json
 export class PowerLawOptions {
-  exponent: f64 = 0.0;
+  exponent: f64 = 0;
 }
 
 @json
 export class StepOptions {
-  threshold: f64 = 0.0;
+  threshold: f64 = 0;
 }
 
 @json
 export class SineOptions {
-  amplitude: f64 = 0.0;
-  frequency: f64 = 0.0;
-  phase: f64 = 0.0;
+  amplitude: f64 = 0;
+  frequency: f64 = 0;
+  phase: f64 = 0;
 }
 
 @json
 export class TriangleOptions {
-  amplitude: f64 = 0.0;
-  frequency: f64 = 0.0;
-  phase: f64 = 0.0;
+  amplitude: f64 = 0;
+  period: f64 = 0;
+  phase: f64 = 0;
 }
 
-@json 
+@json
 export class QuadraticOptions {
   a: f64 = 0;
   b: f64 = 0;
   c: f64 = 0;
 }
 
-@json 
+@json
 export class CubicOptions {
   a: f64 = 0;
   b: f64 = 0;
@@ -61,27 +61,67 @@ export class CubicOptions {
   d: f64 = 0;
 }
 
-@json 
+@json
 export class ExponentialGrowthOptions {
   rate: f64 = 0;
 }
 
-@json 
+@json
 export class LogarithmicDecayOptions {
+  rate: f64 = 0;
   base: f64 = 0;
 }
 
-@json 
+@json
 export class SawtoothOptions {
   amplitude: f64 = 0;
-  frequency: f64 = 0;
+  period: f64 = 0;
   phase: f64 = 0;
 }
 
-@json 
+@json
 export class SquareWaveOptions {
   amplitude: f64 = 0;
-  frequency: f64 = 0;
-  dutyCycle: f64 = 0;
+  period: f64 = 0;
   phase: f64 = 0;
+}
+
+@json
+export class CurvesConfigHelper {
+  // Liquidity shape
+  liquidityShape: PositionStyle = PositionStyle.Absolute; 
+  // ExponentialDecayOptions
+  rate: f64 = 0;
+  // NormalOptions
+  mean: f64 = 0;
+  stdDev: f64 = 0;
+  // SigmoidOptions
+  k: f64 = 0;
+  // LogarithmicOptions
+  base: f64 = 0;
+  // PowerLawOptions
+  exponent: f64 = 0;
+  // StepOptions
+  threshold: f64 = 0;
+  // SineOptions
+  amplitude: f64 = 0;
+  frequency: f64 = 0;
+  phase: f64 = 0;
+  // TriangleOptions
+  period: f64 = 0;
+  // QuadraticOptions
+  a: f64 = 0;
+  b: f64 = 0;
+  c: f64 = 0;
+  // CubicOptions
+  d: f64 = 0;
+  // ExponentialGrowthOptions
+  // rate: f64 = 0; // rate is already included above
+  // LogarithmicDecayOptions
+  // rate: f64 = 0; // rate is already included above
+  // base: f64 = 0; // base is already included above
+  // SawtoothOptions
+  // amplitude: f64 = 0; // amplitude is already included above
+  // period: f64 = 0; // period is already included above
+  // phase: f64 = 0; // phase is already included above
 }
