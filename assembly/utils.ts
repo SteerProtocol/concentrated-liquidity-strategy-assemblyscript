@@ -54,14 +54,14 @@ export function renderULMResult(
 // TODO: Might need to be rewritten for assets
 // Price must be in the native token
 // token0 for token1
-export function getTickFromPrice(price: f32): f32 {
-  const tick = Math.log(price) / Math.log(f32(1.0001));
-  return f32(tick);
+export function getTickFromPrice(price: f64): i32 {
+  const tick = Math.log(price) / Math.log(f64(1.0001));
+  return i32(tick);
 }
 
 export function formatTick(expandedUpperLimit: number, expandedLowerLimit: number, poolFee: number): Array<number> {
-  const upperTick = closestDivisibleNumber(i32(Math.round(getTickFromPrice(f32(expandedUpperLimit)))), getTickSpacing(i32(poolFee)), false);
-  const lowerTick = closestDivisibleNumber(i32(Math.round(getTickFromPrice(f32(expandedLowerLimit)))), getTickSpacing(i32(poolFee)), true);
+  const upperTick = closestDivisibleNumber(i32(Math.round(getTickFromPrice(f64(expandedUpperLimit)))), getTickSpacing(i32(poolFee)), false);
+  const lowerTick = closestDivisibleNumber(i32(Math.round(getTickFromPrice(f64(expandedLowerLimit)))), getTickSpacing(i32(poolFee)), true);
   return [ upperTick, lowerTick ];
 }
 
