@@ -54,9 +54,9 @@ export function renderULMResult(
 // TODO: Might need to be rewritten for assets
 // Price must be in the native token
 // token0 for token1
-export function getTickFromPrice(price: f64): f64 {
+export function getTickFromPrice(price: f64): i32 {
   const tick = Math.log(price) / Math.log(f64(1.0001));
-  return f64(tick);
+  return i32(tick);
 }
 
 export function formatTick(expandedUpperLimit: number, expandedLowerLimit: number, poolFee: number): Array<number> {
