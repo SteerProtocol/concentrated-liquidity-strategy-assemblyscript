@@ -1,10 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<script type="module">
-import { initialize, execute } from "./build/release.js";
-document.body.innerText = 'Implementation missing, please fix index.html';;
-</script>
-</head>
-<body></body>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="json-viewer/jquery.json-viewer.js"></script>
+    <link
+      href="json-viewer/jquery.json-viewer.css"
+      type="text/css"
+      rel="stylesheet"
+    />
+    <script type="module">
+      import { generatePositions, PositionStyle } from "./build/debug.js";
+      async function createChart() {
+        const positionStyle = PositionStyle.Logarithmic;
+        const options = {"base": 0.4}
+        const lowerBound = -100;
+        const upperBound = 100;
+        const segmentWidth = 5;
+
+        const result = generatePositions(
+          upperBound,
+          lowerBound,
+          segmentWidth,
+          positionStyle,
+          JSON.stringify(options)
+        );
+
+        const data = JSON.parse(result).map((position, index) => ({
+          x: position.startTick,
+          y: position.weight,
+          x2: position.endTick,
+        }));
+
+        const ctx = document.getElementById("myChart").getContext("2d");
+        const myChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            datasets: [
+              {
+                label: "Generated Data",
+                data: data,
+                borderColor: "rgba(75, 192, 192, 1)",
+                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            indexAxis: "x",
+            scales: {
+              x: {
+                type: "linear",
+                title: {
+                  display: true,
+                  text: "Index",
+                },
+              },
+              y: {
+                type: "linear",
+                title: {
+                  display: true,
+                  text: "Value",
+                },
+              },
+            },
+            elements: {
+              bar: {
+                borderWidth: 1,
+                borderColor: "rgba(75, 192, 192, 1)",
+              },
+            },
+            animation: {
+              duration: 0,
+            },
+            responsiveAnimationDuration: 0,
+          },
+          plugins: [
+            {
+              id: "custom-x2",
+              beforeInit(chart) {
+                chart.data.datasets.forEach((dataset) => {
+                  dataset.barPercentage = 1;
+                });
+              },
+              afterDataLimits(chart) {
+                chart.data.datasets.forEach((dataset) => {
+                  dataset.data.forEach((data) => {
+                    const diff = data.x2 - data.x;
+                    if (diff < chart.scales.x.axisWidth) {
+                      dataset.barPercentage = Math.min(
+                        dataset.barPercentage,
+                        diff / chart.scales.x.axisWidth
+                      );
+                    }
+                  });
+                });
+              },
+            },
+          ],
+        });
+
+        console.table(result);
+
+        document.getElementById("json-renderer").innerHTML = result;
+      }
+
+      createChart();
+    </script>
+  </head>
+  <body>
+    <canvas id="myChart"></canvas>
+    <pre id="json-renderer"></pre>
+  </body>
 </html>

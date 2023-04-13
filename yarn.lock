@@ -10,11 +10,6 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@assemblyscript/loader@0.19.9":
-  version "0.19.9"
-  resolved "https://registry.npmjs.org/@assemblyscript/loader/-/loader-0.19.9.tgz"
-  integrity sha512-AL39UxO+LkYDXtxFTyJP1UVJYIgqVHTbwk9BMPZjoiNxPP/kxDP+LmHxkr1Pm6goR1QbnF69mn5NMuiLTde0mA==
-
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.16.7":
   version "7.16.7"
   resolved "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.16.7.tgz"
@@ -1616,6 +1611,13 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@steerprotocol/app-loader@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@steerprotocol/app-loader/-/app-loader-0.1.6.tgz#4e35c7e2358ce96f565b2ca994ae033ead097049"
+  integrity sha512-517Jar2FZKhLXc8edTrYVWOGSAIEmvHMWVUm0de+ln8KOrYuwhJon0RE/Ad8d4w1bIOtq9UnkpGCeej9i4mCmQ==
+  dependencies:
+    pondjs "1.0.0-alpha.10"
+
 "@steerprotocol/base-strategy@0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@steerprotocol/base-strategy/-/base-strategy-0.1.0.tgz#b2e3203b53acfd8a24f49f71a646f617a0731c1b"
@@ -1631,29 +1633,15 @@
     typescript "^4.3.5"
     visitor-as "^0.11.4"
 
-"@steerprotocol/base-strategy@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.npmjs.org/@steerprotocol/base-strategy/-/base-strategy-0.0.2.tgz"
-  integrity sha512-a/47GcdHC7CYukxOGEnlvIvEPDCrCt0Orwl0hTrAhi22pIaJfHRj/B4eN/iFifB8aJMYhp7DNcWHfaSYm+xiIw==
-  dependencies:
-    "@assemblyscript/loader" "0.19.9"
-    "@babel/preset-typescript" "^7.14.5"
-    "@semantic-release/changelog" "^5.0.1"
-    "@semantic-release/git" "^9.0.0"
-    as-bind "^0.8.0"
-    commitizen "^4.2.4"
-    conventional-changelog-conventionalcommits "^4.6.0"
-    typescript "^4.3.5"
-
-"@steerprotocol/strategy-utils@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@steerprotocol/strategy-utils/-/strategy-utils-2.1.0.tgz#e9b9c40363986b6c66bb3e7e0807b878e01c9833"
-  integrity sha512-LblygBA5GrNtcFGtFD18mAnffPaL0qeGne9ffU3tyAuJT7v5JSzxBqveC3npsAcdgWK/ysDsr9aE39bAMun4hg==
+"@steerprotocol/strategy-utils@2.1.8":
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/@steerprotocol/strategy-utils/-/strategy-utils-2.1.8.tgz#4f9f1f5839bfc24461fb17b24c9dc9d1ef508085"
+  integrity sha512-YD5HF8YGVQYyLkN3DOs1gEMMFcvwuzIWL6v+WUhpW/TlUoSJMWlOs3KE5wkuiYRBmkPv6YeZsY3i5oZS2ubKNQ==
   dependencies:
     "@babel/preset-typescript" "^7.14.5"
     "@semantic-release/changelog" "^5.0.1"
     "@semantic-release/git" "^9.0.0"
-    "@steerprotocol/base-strategy" "^0.0.2"
+    "@steerprotocol/base-strategy" "0.1.0"
     as-bignum "^0.2.23"
     commitizen "^4.2.4"
     conventional-changelog-conventionalcommits "^4.6.0"
@@ -2027,17 +2015,15 @@ as-bignum@^0.2.23:
   resolved "https://registry.yarnpkg.com/as-bignum/-/as-bignum-0.2.23.tgz#626e358721504291d35db4ce5c80693630048ad3"
   integrity sha512-0+GiwHNwyw0lXI+6uzOI6ReNOEsqKihdLJuOYJeqEOfXcIqwtSixLcQ7h9UQaMrroktW/Idmqj2TinpcWTxxJA==
 
-as-bind@^0.8.0:
-  version "0.8.2"
-  resolved "https://registry.npmjs.org/as-bind/-/as-bind-0.8.2.tgz"
-  integrity sha512-Y7WTopfRLODzLLpTgyrf6TMeEbcckF8u7r/eU68PeiKh7yY/YzmjCQiPAJw0F70bge+84nUO5j4No7V4fzdoew==
-  dependencies:
-    visitor-as "^0.5.0"
-
 as-string-sink@^0.5.0:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/as-string-sink/-/as-string-sink-0.5.2.tgz#39da159c01a2064a1dadd872a38c743369dd567f"
   integrity sha512-HJmhbgJWqfllV7ltZxpMaj/AxSkokb3MzYo1Qd+0HIB9zyzChu1SXBmNc3n0U3XrT6/NIeQvBUegxaXwoUNXAg==
+
+as-string-sink@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/as-string-sink/-/as-string-sink-0.5.3.tgz#462392222e01bb4570ee0df685b7f64630fd4f56"
+  integrity sha512-DN/QqfptDhi4FaBqehMN9wH5Dl/PcTSfCfzSmcdtf3OVYYIEip5iyVUcS6t40BAP/OoUwtxCCbD/dlr2kVG+3Q==
 
 as-variant@^0.4.1:
   version "0.4.1"
@@ -3762,6 +3748,11 @@ ignore@^5.2.0:
   resolved "https://registry.npmjs.org/ignore/-/ignore-5.2.0.tgz"
   integrity sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==
 
+immutable@^4.0.0-rc.12:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.2.4.tgz#83260d50889526b4b531a5e293709a77f7c55a2a"
+  integrity sha512-WDxL3Hheb1JkRN3sQkyujNlL/xRjAo3rJtaU5xeufUauG66JdMr32bLj4gF+vWl84DIA3Zxw7tiAjneYzRRw+w==
+
 import-fresh@^3.0.0, import-fresh@^3.2.1:
   version "3.3.0"
   resolved "https://registry.npmjs.org/import-fresh/-/import-fresh-3.3.0.tgz"
@@ -4563,6 +4554,15 @@ json-as@^0.5.20:
     as-string-sink "^0.5.0"
     as-variant "^0.4.1"
 
+json-as@^0.5.36:
+  version "0.5.36"
+  resolved "https://registry.yarnpkg.com/json-as/-/json-as-0.5.36.tgz#ee253b484f1ab3719c1947e740126e0602da5ef5"
+  integrity sha512-/oh/Lp4fWEHtq2K3kMLsTMx0d2ywzZbepgaAHe0Ca9J9bYMEEvbW3PLYo0TgVVkjLhvg24mPbUjGWq/f+PBmZQ==
+  dependencies:
+    as-bignum "^0.2.23"
+    as-string-sink "^0.5.3"
+    as-variant "^0.4.1"
+
 json-parse-better-errors@^1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz"
@@ -4857,7 +4857,7 @@ lodash.uniqby@^4.7.0:
   resolved "https://registry.npmjs.org/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz"
   integrity sha1-2ZwHpmnp5tJOE2Lf4mbGdhavEwI=
 
-lodash@^4.17.12, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.7.0:
+lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -5149,6 +5149,18 @@ modify-values@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/modify-values/-/modify-values-1.0.1.tgz"
   integrity sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==
+
+moment-timezone@^0.5.25:
+  version "0.5.41"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.41.tgz#a7ad3285fd24aaf5f93b8119a9d749c8039c64c5"
+  integrity sha512-e0jGNZDOHfBXJGz8vR/sIMXvBIGJJcqFjmlg9lmE+5KX1U7/RZNMswfD8nKnNCnQdKTIj50IaRKwl1fvMLyyRg==
+  dependencies:
+    moment "^2.29.4"
+
+moment@^2.24.0, moment@^2.29.4:
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
 ms@2.0.0:
   version "2.0.0"
@@ -5755,6 +5767,16 @@ pkg-dir@^4.2.0:
   integrity sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==
   dependencies:
     find-up "^4.0.0"
+
+pondjs@1.0.0-alpha.10:
+  version "1.0.0-alpha.10"
+  resolved "https://registry.yarnpkg.com/pondjs/-/pondjs-1.0.0-alpha.10.tgz#443d80ebd9b5e8bfd32d9efef5285646c19b8672"
+  integrity sha512-ADR2Vf7MAeLXKU2Trq+mL63riqTxoyRaSxrhBN30zAfEEQ7OEFp2KqaAqWJuimsbOiQ1RLHSphjGJDh2x9rC6A==
+  dependencies:
+    immutable "^4.0.0-rc.12"
+    lodash "^4.17.11"
+    moment "^2.24.0"
+    moment-timezone "^0.5.25"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -6790,11 +6812,6 @@ trim-right@^1.0.1:
   resolved "https://registry.npmjs.org/trim-right/-/trim-right-1.0.1.tgz"
   integrity sha1-yy4SAwZ+DI3h9hQJS5/kVwTqYAM=
 
-ts-mixer@^5.1.0:
-  version "5.4.1"
-  resolved "https://registry.npmjs.org/ts-mixer/-/ts-mixer-5.4.1.tgz"
-  integrity sha512-Zo9HgPCtNouDgJ+LGtrzVOjSg8+7WGQktIKLwAfaNrlOK1mWGlz1ejsAF/YqUEqAGjUTeB5fEg8gH9Aui6w9xA==
-
 ts-mixer@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/ts-mixer/-/ts-mixer-6.0.2.tgz#3e4e4bb8daffb24435f6980b15204cb5b287e016"
@@ -7035,14 +7052,6 @@ visitor-as@^0.11.4:
   dependencies:
     lodash.clonedeep "^4.5.0"
     ts-mixer "^6.0.2"
-
-visitor-as@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.npmjs.org/visitor-as/-/visitor-as-0.5.0.tgz"
-  integrity sha512-U2P13pa7BAnfj6IEbP4feS1Rci6NT4GlDcwpqkk90u7LGalc5jH9aMuWnxTC8RJJ92iZzDQ8Lea5/OnLDsgzlw==
-  dependencies:
-    lodash.clonedeep "^4.5.0"
-    ts-mixer "^5.1.0"
 
 vscode-oniguruma@^1.6.1:
   version "1.6.2"

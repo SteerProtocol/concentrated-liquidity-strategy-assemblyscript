@@ -24,9 +24,9 @@ export function renderULMResult(
   totalLiquidity1e4: number
 ): string {
   // Construct necessary object
-  const lowerTicks: Array<i32> = [];
-  const upperTicks: Array<i32> = [];
-  const weights: Array<i32> = [];
+  const lowerTicks: Array<i64> = [];
+  const upperTicks: Array<i64> = [];
+  const weights: Array<i64> = [];
 
   for (let i = 0; i < positions.length; i++) {
     lowerTicks.push(positions[i].startTick);
@@ -57,4 +57,15 @@ export function renderULMResult(
 export function getTickFromPrice(price: f32): f32 {
   const tick = Math.log(price) / Math.log(f32(1.0001));
   return f32(tick);
+}
+
+export function formatTick(expandedUpperLimit: number, expandedLowerLimit: number, poolFee: number): Array<number> {
+  const upperTick = closestDivisibleNumber(i32(Math.round(getTickFromPrice(f32(expandedUpperLimit)))), getTickSpacing(i32(poolFee)), false);
+  const lowerTick = closestDivisibleNumber(i32(Math.round(getTickFromPrice(f32(expandedLowerLimit)))), getTickSpacing(i32(poolFee)), true);
+  return [ upperTick, lowerTick ];
+}
+
+function closestDivisibleNumber(num: number, divisor: number, floor: boolean): number {
+  if (floor) return Math.floor(num / divisor) * divisor;
+  return Math.ceil(num / divisor) * divisor;
 }

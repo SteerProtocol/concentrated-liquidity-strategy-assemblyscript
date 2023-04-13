@@ -1,1 +1,2 @@
-export * from './PostitionStyle';
+export * from './Curves';
+export * from './PositionStyle';
