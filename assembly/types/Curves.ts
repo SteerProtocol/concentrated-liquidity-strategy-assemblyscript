@@ -88,8 +88,6 @@ export class SquareWaveOptions {
 
 @json
 export class CurvesConfigHelper {
-  // Liquidity shape
-  liquidityShape: PositionStyle = PositionStyle.Absolute; 
   // ExponentialDecayOptions
   rate: f64 = 0;
   // NormalOptions

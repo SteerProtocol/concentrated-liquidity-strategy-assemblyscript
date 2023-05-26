@@ -1,4 +1,4 @@
-import { Position } from "@steerprotocol/strategy-utils/assembly";
+import { console, Position } from "@steerprotocol/strategy-utils/assembly";
 import { JSON } from "json-as/assembly";
 import { Curves } from "./Curves";
 import {
@@ -31,7 +31,7 @@ export class PositionGenerator {
     style: PositionStyle,
     options: string
   ): Array<Position> {
-    const numberOfPoints = 200;
+    const numberOfPoints = 500;
     const positions: Array<Position> = [];
     const weights: Array<f64> = [];
     let minY = Infinity;
@@ -47,8 +47,10 @@ export class PositionGenerator {
 
       switch (style) {
         case PositionStyle.Absolute:
+          y = 1;
+          break;
         case PositionStyle.Linear:
-          y = 10000;
+          y = 1;
           break;
         case PositionStyle.Normalized:
           y = Curves.normal(startx, JSON.parse<NormalOptions>(options));
@@ -140,32 +142,32 @@ export class PositionGenerator {
     upperTick: number,
     lowerTick: number,
     configJson: CurvesConfigHelper,
-    binWidth: i32
+    binWidth: i32,
+    liquidityShape: PositionStyle
   ): Array<Position> {
     const positionGenerator = new PositionGenerator();
     let positions = new Array<Position>();
-    switch (configJson.liquidityShape) {
-      case PositionStyle.Absolute:
-      case PositionStyle.Linear:
-        positions = positionGenerator.generate(
-          i32(upperTick),
-          i32(lowerTick),
-          binWidth,
-          configJson.liquidityShape,
-          ""
-        );
+    switch (liquidityShape) {
+      case PositionStyle.Absolute: {
+        positions = [new Position(i32(lowerTick), i32(upperTick), 1)]
         break;
+      }
+      case PositionStyle.Linear: {
+        positions = [new Position(i32(lowerTick), i32(upperTick), 1)]
+        break;
+      }
       case PositionStyle.Normalized: {
         const options = new NormalOptions();
-        options.mean = configJson.mean;
+        options.mean = upperTick + lowerTick / 2;
         options.stdDev = configJson.stdDev;
         positions = positionGenerator.generate(
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
+        break;
       }
       case PositionStyle.Sigmoid: {
         const options = new SigmoidOptions();
@@ -174,9 +176,10 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
+        break;
       }
       case PositionStyle.ExponentialDecay: {
         const options = new ExponentialDecayOptions();
@@ -185,7 +188,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -197,7 +200,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -209,7 +212,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -221,7 +224,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -235,7 +238,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -249,7 +252,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -263,7 +266,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -278,7 +281,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -290,7 +293,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -303,7 +306,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -317,7 +320,7 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
@@ -331,11 +334,16 @@ export class PositionGenerator {
           i32(upperTick),
           i32(lowerTick),
           binWidth,
-          configJson.liquidityShape,
+          liquidityShape,
           JSON.stringify(options)
         );
         break;
       }
+      default: {
+        console.log('Invalid position style');
+        break;
+      }
+        
     }
     return positions;
   }
@@ -430,7 +438,9 @@ export class PositionGenerator {
       "properties": {
         "rate": {
           "type": "number",
-          "title": "Rate"
+          "title": "Rate",
+          "description": "Rate of decay",
+          "detailedDescription": "The higher the rate, the faster the decay."
         }
       },
       "required": [

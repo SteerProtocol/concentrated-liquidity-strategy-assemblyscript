@@ -55,3 +55,56 @@ export function PositionStyleLookup(positionStyle: PositionStyle): string {
         throw new Error(`Unknown position style: ${positionStyle}`);
     }
   }
+
+  export function stringToPositionStyle(positionStyleString: string): PositionStyle {
+    if (positionStyleString === "Absolute") {
+      return PositionStyle.Absolute;
+    }
+    if (positionStyleString === "Linear") {
+      return PositionStyle.Linear;
+    }
+    if (positionStyleString === "Normalized") {
+      return PositionStyle.Normalized;
+    }
+    if (positionStyleString === "Sigmoid") {
+      return PositionStyle.Sigmoid;
+    }
+    if (positionStyleString === "ExponentialDecay") {
+      return PositionStyle.ExponentialDecay;
+    }
+    if (positionStyleString === "Logarithmic") {
+      return PositionStyle.Logarithmic;
+    }
+    if (positionStyleString === "PowerLaw") {
+      return PositionStyle.PowerLaw;
+    }
+    if (positionStyleString === "Step") {
+      return PositionStyle.Step;
+    }
+    if (positionStyleString === "Sine") {
+      return PositionStyle.Sine;
+    }
+    if (positionStyleString === "Triangle") {
+      return PositionStyle.Triangle;
+    }
+    if (positionStyleString === "Quadratic") {
+      return PositionStyle.Quadratic;
+    }
+    if (positionStyleString === "Cubic") {
+      return PositionStyle.Cubic;
+    }
+    if (positionStyleString === "ExponentialGrowth") {
+      return PositionStyle.ExponentialGrowth;
+    }
+    if (positionStyleString === "LogarithmicDecay") {
+      return PositionStyle.LogarithmicDecay;
+    }
+    if (positionStyleString === "Sawtooth") {
+      return PositionStyle.Sawtooth;
+    }
+    if (positionStyleString === "SquareWave") {
+      return PositionStyle.SquareWave;
+    }
+    return PositionStyle.Absolute;
+  }
+  
