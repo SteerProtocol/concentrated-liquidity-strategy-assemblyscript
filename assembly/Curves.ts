@@ -18,7 +18,7 @@ import {
   PositionStyle,
 } from "./types";
 import { PositionGenerator } from "./PositionGenerator";
-import { Position } from "@steerprotocol/strategy-utils/assembly";
+import { console, Position } from "@steerprotocol/strategy-utils/assembly";
 
 export class Curves {
   static exponentialDecay(x: f64, options: ExponentialDecayOptions): f64 {
@@ -27,12 +27,17 @@ export class Curves {
   }
 
   static normal(x: f64, options: NormalOptions): f64 {
-    const mean = options.mean || 0;
-    const stdDev = options.stdDev || 1;
-    return (
-      (1 / (stdDev * Math.sqrt(2 * Math.PI))) *
-      Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2))
-    );
+    const mean = options.mean || 5.0;
+    const stdDev = options.stdDev || 2.0;
+    
+    const calculation = (
+      (1.0 / (stdDev * Math.sqrt(2.0 * Math.PI))) *
+      Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2.0))
+    )
+
+    console.log("calss: " + calculation.toString())
+
+    return calculation;
   }
 
   static sigmoid(x: f64, options: SigmoidOptions): f64 {
