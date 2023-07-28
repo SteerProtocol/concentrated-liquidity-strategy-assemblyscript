@@ -21,7 +21,6 @@ import {
   StepOptions,
   TriangleOptions,
 } from "./types";
-import { PositionOptimizer } from "./PositionsOptimizer";
 
 export class PositionGenerator {
   constructor() {}
@@ -36,43 +35,43 @@ export class PositionGenerator {
     const positions: Array<Position> = [];
     const weights: Array<f64> = [];
     let minY = Infinity;
-    
-    for (
-      let i = lowerBound;
-      i < upperBound;
-      i += segmentWidth
-    ) {
-      
-      console.log('generating position')
-      
+
+    for (let i = lowerBound; i < upperBound; i += segmentWidth) {
       const startx = i;
       const endx = startx + segmentWidth;
       const midPoint = (startx + endx) / 2;
 
       let y: f64;
-      
-      console.log('midPoint: ' + midPoint.toString())
-      
-      const tranposedX = this.computeCloseness(midPoint, lowerBound, upperBound);
 
-      console.log(': ' + tranposedX.toString())
+      const tranposedX = this.computeCloseness(
+        midPoint,
+        lowerBound,
+        upperBound
+      );
 
       switch (style) {
         case PositionStyle.Absolute:
           y = 1;
           break;
         case PositionStyle.Linear:
-          y = tranposedX
+          y = tranposedX;
           break;
         case PositionStyle.Normalized:
-          const parsedOptions = JSON.parse<NormalOptions>(options)
-          parsedOptions.mean = this.computeCloseness((upperBound + lowerBound) / 2, lowerBound, upperBound);
+          const parsedOptions = JSON.parse<NormalOptions>(options);
+          parsedOptions.mean = this.computeCloseness(
+            (upperBound + lowerBound) / 2,
+            lowerBound,
+            upperBound
+          );
           y = Curves.normal(tranposedX, parsedOptions);
           break;
         case PositionStyle.Sigmoid:
           // +5 shifts and makes the curve always positive
           // perfect for 0-10 plots
-          y = Curves.sigmoid(tranposedX - 5, JSON.parse<SigmoidOptions>(options));
+          y = Curves.sigmoid(
+            tranposedX - 5,
+            JSON.parse<SigmoidOptions>(options)
+          );
           break;
         case PositionStyle.ExponentialDecay:
           y = Curves.exponentialDecay(
@@ -97,19 +96,24 @@ export class PositionGenerator {
           break;
         case PositionStyle.Triangle:
           const parsedTriangleOptions = JSON.parse<TriangleOptions>(options);
-          
+
           // We are using the transposed y, which means that the period will be the max of
           // transposedX which is 10
           parsedTriangleOptions.period = 10;
           parsedTriangleOptions.amplitude = 1;
           parsedTriangleOptions.phase = 0;
-          
+
           // Transpose so that we leave the magnitude of each value the same
-          const transposedTriangleY = Math.abs(Curves.triangle(tranposedX, parsedTriangleOptions));
+          const transposedTriangleY = Math.abs(
+            Curves.triangle(tranposedX, parsedTriangleOptions)
+          );
           y = transposedTriangleY;
           break;
         case PositionStyle.Quadratic:
-          y = Curves.quadratic(tranposedX, JSON.parse<QuadraticOptions>(options));
+          y = Curves.quadratic(
+            tranposedX,
+            JSON.parse<QuadraticOptions>(options)
+          );
           break;
         case PositionStyle.Cubic:
           y = Curves.cubic(tranposedX, JSON.parse<CubicOptions>(options));
@@ -130,7 +134,10 @@ export class PositionGenerator {
           y = Curves.sawtooth(tranposedX, JSON.parse<SawtoothOptions>(options));
           break;
         case PositionStyle.SquareWave:
-          y = Curves.squareWave(tranposedX, JSON.parse<SquareWaveOptions>(options));
+          y = Curves.squareWave(
+            tranposedX,
+            JSON.parse<SquareWaveOptions>(options)
+          );
           break;
         default:
           y = 0;
@@ -140,7 +147,6 @@ export class PositionGenerator {
       weights.push(y * 100);
       const newPosition = new Position(i32(startx), i32(endx), i32(y * 100));
       positions.push(newPosition);
-      console.log('generated position')
     }
 
     // const scalingFactor: f64 = 0.0001;
@@ -176,7 +182,7 @@ export class PositionGenerator {
     let positions = new Array<Position>();
     switch (liquidityShape) {
       case PositionStyle.Absolute: {
-        positions = [new Position(i32(lowerTick), i32(upperTick), 1)]
+        positions = [new Position(i32(lowerTick), i32(upperTick), 1)];
         break;
       }
       case PositionStyle.Linear: {
@@ -376,14 +382,13 @@ export class PositionGenerator {
       default: {
         break;
       }
-        
     }
     return positions;
   }
 
   static propertyHelper(include: PositionStyle[] = []): string {
     const filteredCurves: string[] = [];
-    for(let curve = 0; curve < include.length; curve++){
+    for (let curve = 0; curve < include.length; curve++) {
       filteredCurves.push(PositionStyleLookup(include[curve]));
     }
     return `"liquidityShape": {
@@ -837,27 +842,24 @@ export class PositionGenerator {
   }`;
   }
 
-  private computeCloseness(current: number, lowerBound: number, upperBound: number): number {
-
+  private computeCloseness(
+    current: number,
+    lowerBound: number,
+    upperBound: number
+  ): number {
     if (upperBound === lowerBound) {
-
-      console.log("Bounds cannot be equal")
       throw new Error("Bounds cannot be equal");
     }
     if (current > upperBound || current < lowerBound) {
-      
-      if(current > upperBound){
-        return 10
+      if (current > upperBound) {
+        return 10;
       }
-      
-      if(current < lowerBound){
-        console.log('current: ' + current.toString())
-        console.log('lowerBound: ' + lowerBound.toString())
-        return 0
+
+      if (current < lowerBound) {
+        return 0;
       }
-      
     }
-  
+
     // Calculate the total distance between bounds
     const totalDistance = difference(i32(upperBound), i32(lowerBound));
 
@@ -865,8 +867,9 @@ export class PositionGenerator {
     const distanceFromUpper = difference(i32(current), i32(upperBound));
 
     // Calculate relative closeness to upper bound
-    let closeness = 1.0 + 9.0 * f32(f32(distanceFromUpper) /f32(totalDistance));
-    
+    let closeness =
+      1.0 + 9.0 * f32(f32(distanceFromUpper) / f32(totalDistance));
+
     return closeness;
   }
 }
@@ -892,15 +895,15 @@ export function generatePositions(
 function difference(a: i32, b: i32): i32 {
   let diff: i32;
   if (a < 0 && b < 0) {
-    diff = ((a)) - ((b));
+    diff = a - b;
   } else if (a < 0) {
-    diff = ((a)) + b;
+    diff = a + b;
   } else if (b < 0) {
-    diff = a + ((b));
+    diff = a + b;
   } else {
     diff = a - b;
   }
-  
+
   return abs(diff);
 }
 
