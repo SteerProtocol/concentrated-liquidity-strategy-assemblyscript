@@ -35,7 +35,7 @@ export class Curves {
       Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2.0))
     )
 
-    console.log("calss: " + calculation.toString())
+    // console.log("calss: " + calculation.toString())
 
     return calculation;
   }
@@ -95,7 +95,7 @@ export class Curves {
     const a = options.a || 1;
     const b = options.b || 0;
     const c = options.c || 0;
-    return a * Math.pow(x, 2) + b * x + c;
+    return (a * Math.pow(x, 2)) + (b * x) + c;
   }
 
   static cubic(x: f64, options: CubicOptions): f64 {
@@ -135,4 +135,3 @@ export class Curves {
       : -amplitude;
   }
 }
-

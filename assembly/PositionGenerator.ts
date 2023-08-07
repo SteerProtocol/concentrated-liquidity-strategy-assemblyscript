@@ -30,9 +30,11 @@ export class PositionGenerator {
     lowerBound: number,
     segmentWidth: number,
     style: PositionStyle,
-    options: string
+    options: string,
+    reflect: boolean,
+    invert: boolean
   ): Array<Position> {
-    const positions: Array<Position> = [];
+    let positions: Array<Position> = [];
     const weights: Array<f64> = [];
     let minY = Infinity;
 
@@ -149,26 +151,80 @@ export class PositionGenerator {
       positions.push(newPosition);
     }
 
-    // const scalingFactor: f64 = 0.0001;
-    // const newMin: f64 = 1; // Set your desired minimum value
-    // const newMax: f64 = 10000; // Set your desired maximum value
-    // let maxWeight: f64 = -Infinity;
+    if (reflect) {positions = PositionGenerator.reflectPositions(positions)}
+    if (invert)  {positions = PositionGenerator.invertPositions(positions)}
+    positions = PositionGenerator.floatNegativePositions(positions)
 
-    // for (let i = 0; i < weights.length; i++) {
-    //   const weight = weights[i];
-    //   minY = Math.min(minY, weight);
-    //   maxWeight = Math.max(maxWeight, weight);
-    // }
-
-    // // Normalize positions based on minY, newMin, and newMax
-    // for (let i = 0; i < positions.length; i++) {
-    //   const normalizedWeight = i32(
-    //     ((weights[i] - minY) * (newMax - newMin)) / (maxWeight - minY) + newMin
-    //   );
-    //   positions[i].weight = normalizedWeight;
-    // }
-
+    PositionGenerator.checkTickBounds(positions)
+    PositionGenerator.checkWeightRange(positions)
     return positions;
+  }
+
+  // flip weights over y axis
+  static reflectPositions(
+    positions: Position[]
+  ): Position[] {
+    // for some reason other implementations struggled
+    const newPositions = positions
+    const newWeights:i32[] = []
+    for (let i:i32 = positions.length -1; i > -1; i--) {
+      newWeights.push(positions[i].weight)
+    }
+    for (let i:i32 = 0; i < positions.length; i++) {
+      newPositions[i].weight = newWeights[i]
+    }
+    return newPositions
+  }
+
+  // flip weights over x axis
+  static invertPositions(positions: Position[]): Position[] {
+    // get high and low
+    const newPositions = positions
+    let high: i32 = positions[0].weight
+    let low: i32 = positions[0].weight
+    for (let i:i32 = 1; i < positions.length; i++) {
+      if (positions[i].weight > high) high = positions[i].weight
+      if (positions[i].weight < low) low = positions[i].weight
+    }
+    // reassign
+    const ceilling = low + high
+    for (let i:i32 = 0; i < positions.length; i++) {
+      newPositions[i].weight = ceilling - positions[i].weight
+    }
+    return newPositions
+  }
+
+  // If we have negative weights, rise the magnitude of the negative
+  static floatNegativePositions(positions: Position[]): Position[] {
+    const newPositions = positions
+    // get lowest weight
+    let lowest = newPositions[0].weight
+    for (let i:i32 = 0; i < positions.length; i++) {
+      if (lowest > newPositions[i].weight) {
+        lowest = newPositions[i].weight
+      }
+    }
+    // if we have negatives, float up
+    if (lowest < 0) {
+      const rise = i32(Math.abs(lowest))
+      for (let i:i32 = 0; i < positions.length; i++) {
+        newPositions[i].weight = newPositions[i].weight + rise
+      }
+    }
+    return newPositions
+  }
+
+  // Cannot exceed the tick bounds of 887272
+  static checkTickBounds(positions: Position[]): void {
+    // assuming ordered positions
+    if ((positions[0].startTick < -887272) || positions[positions.length-1].endTick > 887272) throw new Error("Position's ticks out of range");
+  }
+
+  // Position's relative weight cannot exceed uint16 max value 65535
+  static checkWeightRange(positions: Position[]): void {
+    for (let i:i32 = 0; i < positions.length; i++) {
+      if (positions[i].weight > 65535) throw new Error("Position weight overflow");
+    }
   }
 
   static applyLiquidityShape(
@@ -192,7 +248,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -205,7 +263,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -217,7 +277,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -229,7 +291,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -241,7 +305,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -253,7 +319,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -265,7 +333,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -279,7 +349,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -293,7 +365,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -307,7 +381,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -322,7 +398,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -334,7 +412,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -347,7 +427,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -361,7 +443,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -375,7 +459,9 @@ export class PositionGenerator {
           i32(lowerTick),
           binWidth,
           liquidityShape,
-          JSON.stringify(options)
+          JSON.stringify(options),
+          configJson.reflect,
+          configJson.invert
         );
         break;
       }
@@ -412,10 +498,16 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
+        },
+        "reflect": {
+          "title": "Reflect Curve Over Y-Axis",
+          "type": "boolean"
         }
       },
-      "required": ["bins"]
+      "required": ["bins", "reflect"]
     }
   },
   {
@@ -430,11 +522,18 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "stdDev": {
           "type": "number",
           "title": "Standard Deviation"
+        },
+        "invert": {
+          "title": "Invert Curve Over X-Axis",
+          "type": "boolean",
+          "default": false
         }
       },
       "required": [
@@ -477,16 +576,31 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "k": {
           "type": "number",
-          "title": "K"
+          "title": "K",
+          "default": 5,
+          "description": "The slope of the curve or the steepness of the sigmoid function."
+        },
+        "reflect": {
+          "title": "Reflect Curve Over Y-Axis",
+          "type": "boolean",
+          "default": false
+        },
+        "invert": {
+          "title": "Invert Curve Over X-Axis",
+          "type": "boolean",
+          "default": false
         }
       },
       "required": [
         "bins",
-        "k"
+        "k",
+        "reflect"
       ]
     }
   },
@@ -502,11 +616,23 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "base": {
           "type": "number",
           "title": "Base"
+        },
+        "reflect": {
+          "title": "Reflect Curve Over Y-Axis",
+          "type": "boolean",
+          "default": false
+        },
+        "invert": {
+          "title": "Invert Curve Over X-Axis",
+          "type": "boolean",
+          "default": false
         }
       },
       "required": [
@@ -527,16 +653,29 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "exponent": {
           "type": "number",
           "title": "Exponent"
+        },
+        "reflect": {
+          "title": "Reflect Curve Over Y-Axis",
+          "type": "boolean",
+          "default": false
+        },
+        "invert": {
+          "title": "Invert Curve Over X-Axis",
+          "type": "boolean",
+          "default": false
         }
       },
       "required": [
         "bins",
-        "exponent"
+        "exponent",
+        "reflect"
       ]
     }
   },
@@ -552,7 +691,9 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "threshold": {
           "type": "number",
@@ -577,19 +718,27 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "amplitude": {
           "type": "number",
-          "title": "Amplitude"
+          "title": "Amplitude",
+          "default": 1,
+          "description": "The amplitude determines the maximum height of the sine curve. Larger numbers will result in more dramatic highs."
         },
         "frequency": {
           "type": "number",
-          "title": "Frequency"
+          "title": "Frequency",
+          "default": 0.5,
+          "description": "The frequency determines the number of cycles (complete oscillations) the sine curve completes in one unit of distance along the x-axis. In the case of frequency 1, the sine curve completes one full cycle in one unit of distance along the x-axis."
         },
         "phase": {
           "type": "number",
-          "title": "Phase"
+          "title": "Phase",
+          "default": 0,
+          "description": "The phase represents a horizontal shift of the sine curve. When the phase is 0, the curve starts at its highest point (the peak)."
         }
       },
       "required": [
@@ -612,7 +761,9 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "amplitude": {
           "type": "number",
@@ -647,19 +798,37 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "a": {
           "type": "number",
-          "title": "A"
+          "title": "A",
+          "default": 1,
+          "description": "Ref: ax^2 + bx + c"
         },
         "b": {
           "type": "number",
-          "title": "B"
+          "title": "B",
+          "default": 1,
+          "description": "Ref: ax^2 + bx + c"
         },
         "c": {
           "type": "number",
-          "title": "C"
+          "title": "C",
+          "default": 1,
+          "description": "Ref: ax^2 + bx + c"
+        },
+        "reflect": {
+          "title": "Reflect Curve Over Y-Axis",
+          "type": "boolean",
+          "default": false
+        },
+        "invert": {
+          "title": "Invert Curve Over X-Axis",
+          "type": "boolean",
+          "default": false
         }
       },
       "required": [
@@ -682,23 +851,43 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "a": {
           "type": "number",
-          "title": "A"
+          "title": "A",
+          "default": 1,
+          "description": "Ref: ax^3 + bx^2 + cx + d"
         },
         "b": {
           "type": "number",
-          "title": "B"
+          "title": "B",
+          "default": 1,
+          "description": "Ref: ax^3 + bx^2 + cx + d"
         },
         "c": {
           "type": "number",
-          "title": "C"
+          "title": "C",
+          "default": 1,
+          "description": "Ref: ax^3 + bx^2 + cx + d"
         },
         "d": {
           "type": "number",
-          "title": "D"
+          "title": "D",
+          "default": 1,
+          "description": "Ref: ax^3 + bx^2 + cx + d"
+        },
+        "reflect": {
+          "title": "Reflect Curve Over Y-Axis",
+          "type": "boolean",
+          "default": false
+        },
+        "invert": {
+          "title": "Invert Curve Over X-Axis",
+          "type": "boolean",
+          "default": false
         }
       },
       "required": [
@@ -722,7 +911,9 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "rate": {
           "type": "number",
@@ -747,7 +938,9 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "rate": {
           "type": "number",
@@ -777,7 +970,9 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "amplitude": {
           "type": "number",
@@ -812,7 +1007,9 @@ export class PositionGenerator {
       "properties": {
         "bins": {
           "type": "number",
-          "title": "Positions"
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
         },
         "amplitude": {
           "type": "number",
@@ -874,23 +1071,24 @@ export class PositionGenerator {
   }
 }
 
-export function generatePositions(
-  upperBound: number,
-  lowerBound: number,
-  width: number,
-  style: PositionStyle,
-  options: string
-): String {
-  const generator = new PositionGenerator();
-  const positions = generator.generate(
-    i32(upperBound),
-    i32(lowerBound),
-    width,
-    style,
-    options
-  );
-  return JSON.stringify(positions);
-}
+// export function generatePositions(
+//   upperBound: number,
+//   lowerBound: number,
+//   width: number,
+//   style: PositionStyle,
+//   options: string
+// ): String {
+//   const generator = new PositionGenerator();
+//   const positions = generator.generate(
+//     i32(upperBound),
+//     i32(lowerBound),
+//     width,
+//     style,
+//     options,
+    
+//   );
+//   return JSON.stringify(positions);
+// }
 
 function difference(a: i32, b: i32): i32 {
   let diff: i32;

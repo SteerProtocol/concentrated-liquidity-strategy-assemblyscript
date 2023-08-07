@@ -21,7 +21,7 @@
     "@babel/preset-typescript": "^7.14.5",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
-    "@steerprotocol/app-loader": "^0.1.6",
+    "@steerprotocol/app-loader": "^0.2.2",
     "@steerprotocol/base-strategy": "0.1.0",
     "@steerprotocol/strategy-utils": "2.1.8",
     "as-bignum": "^0.2.23",

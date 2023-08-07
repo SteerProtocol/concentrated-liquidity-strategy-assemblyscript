@@ -92,6 +92,8 @@ export class SquareWaveOptions {
 
 @json
 export class CurvesConfigHelper {
+  reflect: boolean = false;
+  invert: boolean = false;
   // ExponentialDecayOptions
   rate: f64 = 0;
   // NormalOptions
