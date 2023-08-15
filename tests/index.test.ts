@@ -5,7 +5,7 @@ describe("WASM Module", () => {
   let myModule: WasmModule;
   
   beforeEach(async () => {
-    myModule = await loadWasm(fs.readFileSync(__dirname + "/./static-v2-debug.wasm"), {})
+    myModule = await loadWasm(fs.readFileSync(__dirname + "/./stable-debug-v2.wasm"), {})
   });
   describe("Curve Lib", () => {
 

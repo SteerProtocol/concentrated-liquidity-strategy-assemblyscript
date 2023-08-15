@@ -23,6 +23,7 @@ import {
 } from "./types";
 
 export class PositionGenerator {
+
   constructor() {}
 
   public generate(
@@ -60,6 +61,7 @@ export class PositionGenerator {
           break;
         case PositionStyle.Normalized:
           const parsedOptions = JSON.parse<NormalOptions>(options);
+          // unsure why we would do this
           parsedOptions.mean = this.computeCloseness(
             (upperBound + lowerBound) / 2,
             lowerBound,
@@ -154,6 +156,7 @@ export class PositionGenerator {
     if (reflect) {positions = PositionGenerator.reflectPositions(positions)}
     if (invert)  {positions = PositionGenerator.invertPositions(positions)}
     positions = PositionGenerator.floatNegativePositions(positions)
+    positions = PositionGenerator.scaleWeightRange(positions)
 
     PositionGenerator.checkTickBounds(positions)
     PositionGenerator.checkWeightRange(positions)
@@ -226,6 +229,27 @@ export class PositionGenerator {
       if (positions[i].weight > 65535) throw new Error("Position weight overflow");
     }
   }
+
+    // Position's relative weight cannot exceed uint16 max value 65535
+    static scaleWeightRange(positions: Position[]): Position[] {
+      const MAX_WEIGHT = 60000 // actually 65535 but just to be safe
+      // get max and min values
+      let high: i32 = positions[0].weight
+      let low: i32 = positions[0].weight
+      for (let i:i32 = 1; i < positions.length; i++) {
+        if (positions[i].weight > high) high = positions[i].weight
+        if (positions[i].weight < low) low = positions[i].weight
+      }
+      // determine if scaling necessary
+      if (high <= MAX_WEIGHT) return positions
+      // scale down
+      const divisor = i32(Math.ceil(high / MAX_WEIGHT) + 2)
+      const newPositions: Position[] = positions
+      for (let i:i32 = 0; i < positions.length; i++) {
+        newPositions[i].weight = newPositions[i].weight / divisor
+      }
+      return newPositions
+    }
 
   static applyLiquidityShape(
     upperTick: number,
@@ -528,7 +552,10 @@ export class PositionGenerator {
         },
         "stdDev": {
           "type": "number",
-          "title": "Standard Deviation"
+          "title": "Standard Deviation",
+          "description": "The value to use as the standard deviation when forming the Gaussian curve.",
+          "detailedDescription": "The value in ticks representing the average distance from the center of the curve. Increasing this value will increase the spread or coverage of the curve.",
+          "default": 5
         },
         "invert": {
           "title": "Invert Curve Over X-Axis",
@@ -555,8 +582,8 @@ export class PositionGenerator {
         "rate": {
           "type": "number",
           "title": "Rate",
-          "description": "Rate of decay",
-          "detailedDescription": "The higher the rate, the faster the decay."
+          "description": "The decay constant, related to the half-life of the substance",
+          "detailedDescription": "The higher the rate, the faster the decay of quantity, giving a more dramatic and steep curve."
         }
       },
       "required": [
@@ -582,7 +609,7 @@ export class PositionGenerator {
         },
         "k": {
           "type": "number",
-          "title": "K",
+          "title": "Slope (k)",
           "default": 5,
           "description": "The slope of the curve or the steepness of the sigmoid function."
         },
@@ -622,7 +649,10 @@ export class PositionGenerator {
         },
         "base": {
           "type": "number",
-          "title": "Base"
+          "title": "Base",
+          "description": "The base of the logarithm.",
+          "detailedDescription": "Increasing this value will give the curve a sharper angle and flatten out sooner. ",
+          "default": 2
         },
         "reflect": {
           "title": "Reflect Curve Over Y-Axis",
@@ -659,7 +689,10 @@ export class PositionGenerator {
         },
         "exponent": {
           "type": "number",
-          "title": "Exponent"
+          "title": "Exponent",
+          "description": "The exponent of the power law",
+          "detailedDescription": "The inverse of this value is applied to the x value, larger values will lead to steeper curves.",
+          "default": 2
         },
         "reflect": {
           "title": "Reflect Curve Over Y-Axis",
@@ -726,19 +759,22 @@ export class PositionGenerator {
           "type": "number",
           "title": "Amplitude",
           "default": 1,
-          "description": "The amplitude determines the maximum height of the sine curve. Larger numbers will result in more dramatic highs."
+          "description": "The amplitude determines the maximum height of the sine curve. Larger numbers will result in more dramatic highs.",
+          "detailedDescription": "The amplitude determines the maximum height of the sine curve. Larger numbers will result in more dramatic highs."
         },
         "frequency": {
           "type": "number",
           "title": "Frequency",
           "default": 0.5,
-          "description": "The frequency determines the number of cycles (complete oscillations) the sine curve completes in one unit of distance along the x-axis. In the case of frequency 1, the sine curve completes one full cycle in one unit of distance along the x-axis."
+          "description": "The frequency determines the number of cycles (complete oscillations) the sine curve completes in one unit of distance along the x-axis. In the case of frequency 1, the sine curve completes one full cycle in one unit of distance along the x-axis.",
+          "detailedDescription": "The frequency determines the number of cycles (complete oscillations) the sine curve completes in one unit of distance along the x-axis. In the case of frequency 1, the sine curve completes one full cycle in one unit of distance along the x-axis."
         },
         "phase": {
           "type": "number",
           "title": "Phase",
           "default": 0,
-          "description": "The phase represents a horizontal shift of the sine curve. When the phase is 0, the curve starts at its highest point (the peak)."
+          "description": "The phase represents a horizontal shift of the sine curve. When the phase is 0, the curve starts at its highest point (the peak).",
+          "detailedDescription": "The phase represents a horizontal shift of the sine curve. When the phase is 0, the curve starts at its highest point (the peak)."
         }
       },
       "required": [
@@ -767,15 +803,21 @@ export class PositionGenerator {
         },
         "amplitude": {
           "type": "number",
-          "title": "Amplitude"
+          "title": "Amplitude",
+          "description": "The height of the triangle given on the y-axis.",
+          "detailedDescription": "The amplitude of a triangle wave refers to the distance from the baseline (midpoint) of the wave to its peak (or trough). It represents the maximum deviation of the waveform from its average value."
         },
         "period": {
           "type": "number",
-          "title": "Period"
+          "title": "Period",
+          "description": "The distance taken to complete a single cycle of the triangle pattern.",
+          "detailedDescription": "The period of a triangle wave is the time it takes for the wave to complete one full cycle. In other words, it's the distance along the time axis between two consecutive points that correspond to identical positions in the waveform."
         },
         "phase": {
           "type": "number",
-          "title": "Phase"
+          "title": "Phase",
+          "description": "X-axis offset to the waveform cycle.",
+          "detailedDescription": "Phase refers to the position of a waveform within its cycle at a specific point in time."
         }
       },
       "required": [
@@ -1040,13 +1082,15 @@ export class PositionGenerator {
   }
 
   private computeCloseness(
-    current: number,
+    current: number, // center or lower
     lowerBound: number,
     upperBound: number
   ): number {
     if (upperBound === lowerBound) {
       throw new Error("Bounds cannot be equal");
     }
+
+    // if current is out of bounds, return 10 high, 0 low
     if (current > upperBound || current < lowerBound) {
       if (current > upperBound) {
         return 10;
@@ -1058,14 +1102,15 @@ export class PositionGenerator {
     }
 
     // Calculate the total distance between bounds
-    const totalDistance = difference(i32(upperBound), i32(lowerBound));
+    const totalDistance = upperBound - lowerBound//difference(i32(upperBound), i32(lowerBound));
 
     // Calculate how far the current is from the upper bound
-    const distanceFromUpper = difference(i32(current), i32(upperBound));
+    const distanceFromUpper = upperBound - current//difference(i32(current), i32(upperBound));
 
     // Calculate relative closeness to upper bound
     let closeness =
       1.0 + 9.0 * f32(f32(distanceFromUpper) / f32(totalDistance));
+      // case with truncate, lengths are same, we get 10 each time
 
     return closeness;
   }
@@ -1108,3 +1153,5 @@ function difference(a: i32, b: i32): i32 {
 function abs(x: i32): i32 {
   return x < 0 ? -x : x;
 }
+
+
