@@ -207,6 +207,47 @@ describe("WASM Module", () => {
         `{\"functionName\":\"tend(uint256,(int24[],int24[],uint16[]),bytes)\",\"typesArray\":[\"uint256\",\"tuple(int24[],int24[],uint16[])\",\"bytes\"],\"valuesArray\":[10000,[[0,10,20,30,40,50,60,70,80,90],[10,20,30,40,50,60,70,80,90,100],[90,73,55,36,19,0,17,35,52,70]],\"0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff\"]}`
       );
     });
+
+        // PositionStyle.Linear
+        test("linear tricky bins", async () => {
+          // The actual strategy instantiation and execution
+          myModule.initialize(`{"centerTick": 50,"poolFee":500, "spaceSpread": 9, "liquidityShape": "Linear", "bins": 7}`);
+          // Call the config function on the strategy bundle
+          const result = myModule.execute();
+          // Pull the result from memory and parse the result
+          const parsedResult = JSON.parse(result);
+          // The result should match the given config
+          expect(JSON.stringify(parsedResult)).toStrictEqual(
+            `{\"functionName\":\"tend(uint256,(int24[],int24[],uint16[]),bytes)\",\"typesArray\":[\"uint256\",\"tuple(int24[],int24[],uint16[])\",\"bytes\"],\"valuesArray\":[10000,[[10,30,50,70],[30,50,70,90],[887,662,437,212]],\"0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff\"]}`
+          );
+        });
+    
+            test("liquidity shape Linear - check neg inversion", async () => {
+              // The actual strategy instantiation and execution
+              myModule.initialize(`{"centerTick": 0,"poolFee":100, "spaceSpread": 50, "liquidityShape": "Linear", "bins": 50}`);
+              // Call the config function on the strategy bundle
+              const result = myModule.execute();
+              // Pull the result from memory and parse the result
+              const parsedResult = JSON.parse(result);
+              // The result should match the given config
+              expect(JSON.stringify(parsedResult)).toStrictEqual(
+                `{\"functionName\":\"tend(uint256,(int24[],int24[],uint16[]),bytes)\",\"typesArray\":[\"uint256\",\"tuple(int24[],int24[],uint16[])\",\"bytes\"],\"valuesArray\":[10000,[[-25,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],[-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],[991,973,954,937,919,900,883,865,846,829,811,792,775,757,738,720,703,684,666,649,630,612,595,576,558,541,522,504,487,468,450,433,414,397,379,360,343,325,307,288,270,253,235,216,198,181,163,145,126,108]],\"0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff\"]}`
+              );
+            });
+
+                      // PositionStyle.Quadratic
+          test("quadratic large numbers", async () => {
+            // The actual strategy instantiation and execution
+            myModule.initialize(`{"centerTick": 0,"poolFee":500, "spaceSpread": 100, "liquidityShape": "Quadratic",   "bins" 10, "a": 1000, "b": 100, "c": 100}`);
+            // Call the config function on the strategy bundle
+            const result = myModule.execute();
+            // Pull the result from memory and parse the result
+            const parsedResult = JSON.parse(result);
+            // The result should match the given config
+            expect(JSON.stringify(parsedResult)).toStrictEqual(
+              `{\"functionName\":\"tend(uint256,(int24[],int24[],uint16[]),bytes)\",\"typesArray\":[\"uint256\",\"tuple(int24[],int24[],uint16[])\",\"bytes\"],\"valuesArray\":[10000,[[-500,-400,-300,-200,-100,0,100,200,300,400],[-400,-300,-200,-100,0,100,200,300,400,500],[59520,48895,39314,30779,23288,16843,11443,7088,3779,1514]],\"0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffff\"]}`
+            );
+          });
   });
 });
 

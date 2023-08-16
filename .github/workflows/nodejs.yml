@@ -31,8 +31,8 @@ jobs:
       - name: Perform tests
         run: yarn test
 
-      - name: Create the docs directory locally in CI
-        run: yarn docs
+      # - name: Create the docs directory locally in CI
+      #   run: yarn docs
 
       - name: Release
         run: npx semantic-release
@@ -40,8 +40,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.SEMANTIC_RELEASE_BOT_NPM_TOKEN }}
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.4
-        with:
-          branch: gh-pages
-          folder: docs
+      # - name: Deploy 🚀
+      #   uses: JamesIves/github-pages-deploy-action@4.1.4
+      #   with:
+      #     branch: gh-pages
+      #     folder: docs
