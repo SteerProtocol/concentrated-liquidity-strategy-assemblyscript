@@ -2,19 +2,23 @@ import {JSON} from 'json-as/assembly'
 import { PositionStyle } from './PositionStyle';
 
 @json
+export class LinearOptions {
+}
+
+@json
 export class ExponentialDecayOptions {
   rate: f64 = 0;
 }
 
 @json
 export class NormalOptions {
-  mean: f64 = 0;
-  stdDev: f64 = 0;
+  mean: f64 = 5;
+  stdDev: f64 = 2;
 }
 
 @json
 export class SigmoidOptions {
-  k: f64 = 0;
+  k: f64 = 1;
 }
 
 @json
@@ -88,8 +92,8 @@ export class SquareWaveOptions {
 
 @json
 export class CurvesConfigHelper {
-  // Liquidity shape
-  liquidityShape: PositionStyle = PositionStyle.Absolute; 
+  reflect: boolean = false;
+  invert: boolean = false;
   // ExponentialDecayOptions
   rate: f64 = 0;
   // NormalOptions
