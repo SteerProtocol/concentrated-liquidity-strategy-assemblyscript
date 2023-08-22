@@ -505,7 +505,7 @@ export class PositionGenerator {
       "enum": ${JSON.stringify(filteredCurves)},
       "title": "Liquidity Shape",
       "type": "string",
-      "default": "Linear"
+      "default": "Absolute"
     }`;
   }
 
