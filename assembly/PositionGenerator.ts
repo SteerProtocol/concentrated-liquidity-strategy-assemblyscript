@@ -505,7 +505,7 @@ export class PositionGenerator {
       "enum": ${JSON.stringify(filteredCurves)},
       "title": "Liquidity Shape",
       "type": "string",
-      "default": "Linear"
+      "default": "Absolute"
     }`;
   }
 
@@ -531,7 +531,7 @@ export class PositionGenerator {
           "type": "boolean"
         }
       },
-      "required": ["bins", "reflect"]
+      "required": ["bins"]
     }
   },
   {
@@ -626,8 +626,7 @@ export class PositionGenerator {
       },
       "required": [
         "bins",
-        "k",
-        "reflect"
+        "k"
       ]
     }
   },
@@ -707,8 +706,7 @@ export class PositionGenerator {
       },
       "required": [
         "bins",
-        "exponent",
-        "reflect"
+        "exponent"
       ]
     }
   },
