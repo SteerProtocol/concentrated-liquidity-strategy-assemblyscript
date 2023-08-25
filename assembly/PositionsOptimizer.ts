@@ -33,7 +33,30 @@ export class PositionOptimizer {
             }
         }
         return result;
-
-
     }
+}
+
+export function simplifyPositions(positions: Array<Position>): Array<Position> {
+
+    // loop through and try to combine if the weights are the same
+    const newPositions: Position[] = []
+    for (let i = 0; i < positions.length; i++) {
+        let matchingBins = 0
+        let lastTick = positions[i].endTick
+        // check how many match
+        for (let j = i+1; j < positions.length; j++) {
+            if (positions[i].weight == positions[j].weight) {
+                matchingBins += 1
+                lastTick = positions[j].endTick
+            }
+            else {
+                break
+            }
+            
+        }
+        // add matching to positions
+        newPositions.push(new Position(positions[i].startTick, lastTick, positions[i].weight))
+        i += matchingBins
+    }
+    return newPositions
 }

@@ -21,6 +21,7 @@ import {
   StepOptions,
   TriangleOptions,
 } from "./types";
+import { simplifyPositions } from "./PositionsOptimizer";
 
 export class PositionGenerator {
 
@@ -53,7 +54,7 @@ export class PositionGenerator {
       );
 
       switch (style) {
-        case PositionStyle.Absolute:
+        case PositionStyle.Basic:
           y = 1;
           break;
         case PositionStyle.Linear:
@@ -157,6 +158,7 @@ export class PositionGenerator {
     if (invert)  {positions = PositionGenerator.invertPositions(positions)}
     positions = PositionGenerator.floatNegativePositions(positions)
     positions = PositionGenerator.scaleWeightRange(positions)
+    positions = simplifyPositions(positions)
 
     PositionGenerator.checkTickBounds(positions)
     PositionGenerator.checkWeightRange(positions)
@@ -261,7 +263,7 @@ export class PositionGenerator {
     const positionGenerator = new PositionGenerator();
     let positions = new Array<Position>();
     switch (liquidityShape) {
-      case PositionStyle.Absolute: {
+      case PositionStyle.Basic: {
         positions = [new Position(i32(lowerTick), i32(upperTick), 1)];
         break;
       }
@@ -505,7 +507,7 @@ export class PositionGenerator {
       "enum": ${JSON.stringify(filteredCurves)},
       "title": "Liquidity Shape",
       "type": "string",
-      "default": "Absolute"
+      "default": "Basic"
     }`;
   }
 
