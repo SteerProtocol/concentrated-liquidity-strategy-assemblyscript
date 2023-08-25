@@ -1,5 +1,5 @@
 export const enum PositionStyle {
-    Absolute,
+    Basic,
     Linear,
     Normalized,
     Sigmoid,
@@ -19,8 +19,8 @@ export const enum PositionStyle {
 
 export function PositionStyleLookup(positionStyle: PositionStyle): string {
     switch (positionStyle) {
-      case PositionStyle.Absolute:
-        return "Absolute";
+      case PositionStyle.Basic:
+        return "Basic";
       case PositionStyle.Linear:
         return "Linear";
       case PositionStyle.Normalized:
@@ -57,8 +57,8 @@ export function PositionStyleLookup(positionStyle: PositionStyle): string {
   }
 
   export function stringToPositionStyle(positionStyleString: string): PositionStyle {
-    if (positionStyleString === "Absolute") {
-      return PositionStyle.Absolute;
+    if (positionStyleString === "Basic") {
+      return PositionStyle.Basic;
     }
     if (positionStyleString === "Linear") {
       return PositionStyle.Linear;
@@ -105,6 +105,6 @@ export function PositionStyleLookup(positionStyle: PositionStyle): string {
     if (positionStyleString === "SquareWave") {
       return PositionStyle.SquareWave;
     }
-    return PositionStyle.Absolute;
+    return PositionStyle.Basic;
   }
   
