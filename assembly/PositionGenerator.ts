@@ -1081,38 +1081,26 @@ export class PositionGenerator {
   }`;
   }
 
-  private computeCloseness(
-    current: number, // center or lower
-    lowerBound: number,
-    upperBound: number
-  ): number {
-    if (upperBound === lowerBound) {
-      throw new Error("Bounds cannot be equal");
+  private computeCloseness(current: f64, lowerBound: f64, upperBound: f64): f64 {
+    if (upperBound == lowerBound) {
+        throw new Error("Bounds cannot be equal");
     }
 
-    // if current is out of bounds, return 10 high, 0 low
-    if (current > upperBound || current < lowerBound) {
-      if (current > upperBound) {
-        return 10;
-      }
+    let totalDistance: f64 = f64(difference(i32(upperBound), i32(lowerBound)));
+    let closeness: f64;
 
-      if (current < lowerBound) {
-        return 0;
-      }
+    if (current > upperBound) {
+        let distanceFromBound: f64 = f64(difference(i32(current), i32(upperBound)));
+        closeness = 1 - Math.min(distanceFromBound / totalDistance, 1.0) * 9.0;
+    } else if (current < lowerBound) {
+        let distanceFromBound: f64 = f64(difference(i32(lowerBound), i32(current)));
+        closeness = Math.min(distanceFromBound / totalDistance, 1.0) * 9.0;
+    } else {
+        let distanceFromUpper: f64 = f64(difference(i32(current), i32(upperBound)));
+        closeness = 1.0 + 9.0 * (distanceFromUpper / totalDistance);
     }
 
-    // Calculate the total distance between bounds
-    const totalDistance = upperBound - lowerBound//difference(i32(upperBound), i32(lowerBound));
-
-    // Calculate how far the current is from the upper bound
-    const distanceFromUpper = upperBound - current//difference(i32(current), i32(upperBound));
-
-    // Calculate relative closeness to upper bound
-    let closeness =
-      1.0 + 9.0 * f32(f32(distanceFromUpper) / f32(totalDistance));
-      // case with truncate, lengths are same, we get 10 each time
-
-    return closeness;
+    return closeness > 0 ? abs(closeness) : 0;
   }
 }
 
