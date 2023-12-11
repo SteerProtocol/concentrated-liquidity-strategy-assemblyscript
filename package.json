@@ -1,6 +1,6 @@
 {
   "name": "@steerprotocol/concentrated-liquidity-strategy",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Concentrated liquidity strategy classes for Steer Finance",
   "main": "assembly/index.ts",
   "types": "assembly/index.ts",
