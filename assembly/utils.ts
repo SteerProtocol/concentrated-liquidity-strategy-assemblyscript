@@ -51,6 +51,32 @@ export function renderULMResult(
   // The bytes value here is a placeholder for encoding that gets replaced with time-sensitive data upon execution. It will actually be the swap amount for re-balancing (int256) and slippage limit (uint160)
 }
 
+// Function shaped for making positions with the UniLiquidityManager contract for ease
+export function renderULMSingleResult(
+  totalLiquidity1e4: number,
+  newLowerTick: number,
+  newUpperTick: number,
+  swapAmount: number,
+  sqrtPriceLimitX96: number
+): string {
+  return (
+    `{"functionName":"tend(uint256,int24,int24,int248,uint160)",
+    "typesArray":["uint256","int24","int24","int248","uint160"],
+    "valuesArray":[` +
+    totalLiquidity1e4.toString() +
+    `, ` +
+    newLowerTick.toString() +
+    ", " +
+    newUpperTick.toString() +
+    ", " +
+    swapAmount.toString() +
+    ", " +
+    sqrtPriceLimitX96.toString() +
+    `]
+    }`
+  );
+}
+
 // TODO: Might need to be rewritten for assets
 // Price must be in the native token
 // token0 for token1
