@@ -1123,8 +1123,8 @@ export class PositionGenerator {
 //   return JSON.stringify(positions);
 // }
 
-function difference(a: i32, b: i32): i32 {
-  let diff: i32;
+function difference(a: i64, b: i64): i64 {
+  let diff: i64;
   if (a < 0 && b < 0) {
     diff = a - b;
   } else if (a < 0) {
@@ -1135,10 +1135,10 @@ function difference(a: i32, b: i32): i32 {
     diff = a - b;
   }
 
-  return abs(diff);
+  return abs(f64(diff));
 }
 
-function abs(x: i32): i32 {
+function abs(x: f64): f64 {
   return x < 0 ? -x : x;
 }
 

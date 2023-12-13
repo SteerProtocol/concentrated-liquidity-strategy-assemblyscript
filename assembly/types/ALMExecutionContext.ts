@@ -1,7 +1,7 @@
 import { JSON } from "json-as/assembly";
 import { ExecutionContext, Position } from "@steerprotocol/strategy-utils/assembly";
 
-@json
+@serializable
 export class ALMExecutionContext extends ExecutionContext {
   positions: Array<Position> = [];
   currentTick: number = 0;

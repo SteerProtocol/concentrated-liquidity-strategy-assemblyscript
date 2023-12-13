@@ -2031,6 +2031,11 @@ as-variant@^0.4.1:
   resolved "https://registry.yarnpkg.com/as-variant/-/as-variant-0.4.1.tgz#a0c6e0379e53936e9ca888114096b85d9b3d6f6e"
   integrity sha512-NCeerOfp1JRXRcT4WCqOBANPoDTE2zqS4eN+jPtdyNWJybUgG/rX9ugUxICkSQZzCfnG84zzxr3osQbjAkyiww==
 
+as-virtual@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/as-virtual/-/as-virtual-0.1.9.tgz#57ad771b8ba4216143d70174d0b40ee494313945"
+  integrity sha512-R1nR7TT0KcROL/TxSXmiX2Q+7CgUMrjT/y9IP07StStqWs32KT2mpadJNF//yHWRaIJWe6atqTqO0JzsdhkPcQ==
+
 asap@^2.0.0:
   version "2.0.6"
   resolved "https://registry.npmjs.org/asap/-/asap-2.0.6.tgz"
@@ -2043,13 +2048,13 @@ asn1@~0.2.3:
   dependencies:
     safer-buffer "~2.1.0"
 
-assemblyscript@^0.27.0:
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.27.0.tgz#d6c3f8c361184eb7eca0e15431b4e43929168e05"
-  integrity sha512-qD/pH71hHwI6dpR4LGMBASUH8E9jlLxIJXpuzC+2h2CzGS6JAq7nD2SHwG6uOVuzClYljo3gOr2JBzWTYpbq/Q==
+assemblyscript@^0.27.22:
+  version "0.27.22"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.27.22.tgz#5825828602119c90173e974a4b55ac88769598d3"
+  integrity sha512-6ClobsR4Hxn6K0daYp/+n9qWTqVbpdVeSGSVDqRvUEz66vvFb8atS6nLm+fnQ54JXuXmzLQy0uWYYgB8G59btQ==
   dependencies:
-    binaryen "111.0.0-nightly.20230111"
-    long "^5.2.0"
+    binaryen "116.0.0-nightly.20231102"
+    long "^5.2.1"
 
 assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
@@ -2327,10 +2332,10 @@ binary-extensions@^2.2.0:
   resolved "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
-binaryen@111.0.0-nightly.20230111:
-  version "111.0.0-nightly.20230111"
-  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-111.0.0-nightly.20230111.tgz#251226c419ec2fb64037314f476d0e47965c3a84"
-  integrity sha512-CUEED/yMHoGeGnOZhQJW5+Luf5z/F58PHK5lw2feh5fbbqauodgnxyYkc2oxSjYwHHRCmFmaYyeQH4zlhRbebg==
+binaryen@116.0.0-nightly.20231102:
+  version "116.0.0-nightly.20231102"
+  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-116.0.0-nightly.20231102.tgz#0bbf0181ef8a4d963859b1bf68c9bd2d24911dc7"
+  integrity sha512-aPU9tlKdw/gcXx6u4PxtDgOtGjg/ZKnYdk23ctYb70GxZgPhWnGWmnBt01aV5dt5yFFo2V4rbB7SzpSFhViFQA==
 
 bottleneck@^2.18.1:
   version "2.19.5"
@@ -4557,14 +4562,14 @@ json-as@^0.5.20:
     as-string-sink "^0.5.0"
     as-variant "^0.4.1"
 
-json-as@^0.5.36:
-  version "0.5.36"
-  resolved "https://registry.yarnpkg.com/json-as/-/json-as-0.5.36.tgz#ee253b484f1ab3719c1947e740126e0602da5ef5"
-  integrity sha512-/oh/Lp4fWEHtq2K3kMLsTMx0d2ywzZbepgaAHe0Ca9J9bYMEEvbW3PLYo0TgVVkjLhvg24mPbUjGWq/f+PBmZQ==
+json-as@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/json-as/-/json-as-0.6.4.tgz#07287f69da873599603bd114341e127a5f872df2"
+  integrity sha512-uZwetNQxfxZJatHteiKflv89Kc5+qZeuBis2y1K/WEGD1c503IZ2cyl/OJ+QqnZLR/qzpHtKYtJ2TS56s9IFyg==
   dependencies:
-    as-bignum "^0.2.23"
     as-string-sink "^0.5.3"
     as-variant "^0.4.1"
+    as-virtual "^0.1.9"
 
 json-parse-better-errors@^1.0.1:
   version "1.0.2"
@@ -4865,10 +4870,10 @@ lodash@^4.17.12, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
-long@^5.2.0:
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/long/-/long-5.2.1.tgz#e27595d0083d103d2fa2c20c7699f8e0c92b897f"
-  integrity sha512-GKSNGeNAtw8IryjjkhZxuKB3JzlcLTwjtiQCHKvqQet81I93kXslhDQruGI/QsddO83mcDToBVy7GqGS/zYf/A==
+long@^5.2.1:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/long/-/long-5.2.3.tgz#a3ba97f3877cf1d778eccbcb048525ebb77499e1"
+  integrity sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==
 
 longest@^2.0.1:
   version "2.0.1"
