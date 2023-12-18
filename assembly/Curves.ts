@@ -77,8 +77,8 @@ export class Curves {
   }
 
   static triangle(x: f64, options: TriangleOptions): f64 {
-    const amplitude = options.amplitude || 1;
-    const period = options.period || Math.PI * 2;
+    const amplitude = options.amplitude == 0 ? 1 : options.amplitude;
+    const period = options.period == 0 ? Math.PI * 2 : options.period;
     const phase = options.phase || 0;
     const t = (x - phase) % period;
     const adjustedT = t + (t < 0 ? period : 0);
