@@ -28,7 +28,7 @@ export class Curves {
 
   static normal(x: f64, options: NormalOptions): f64 {
     const mean = options.mean || 5.0;
-    const stdDev = options.stdDev || 2.0;
+    const stdDev = Math.abs(options.stdDev) || 2.0;
     
     const calculation = (
       (1.0 / (stdDev * Math.sqrt(2.0 * Math.PI))) *
@@ -44,7 +44,7 @@ export class Curves {
   }
 
   static logarithmic(x: f64, options: LogarithmicOptions): f64 {
-    const base = options.base || Math.E;
+    const base = Math.abs(options.base) || Math.E;
     if (x < 0) {
       const absX = Math.abs(x);
       const argX = Math.atan2(0, x);
@@ -77,8 +77,8 @@ export class Curves {
   }
 
   static triangle(x: f64, options: TriangleOptions): f64 {
-    const amplitude = options.amplitude || 1;
-    const period = options.period || Math.PI * 2;
+    const amplitude = options.amplitude == 0 ? 1 : options.amplitude;
+    const period = options.period == 0 ? Math.PI * 2 : options.period;
     const phase = options.phase || 0;
     const t = (x - phase) % period;
     const adjustedT = t + (t < 0 ? period : 0);
@@ -91,8 +91,8 @@ export class Curves {
 
   static quadratic(x: f64, options: QuadraticOptions): f64 {
     const a = options.a || 1;
-    const b = options.b || 0;
-    const c = options.c || 0;
+    const b = options.b || 1;
+    const c = options.c || 1;
     return (a * Math.pow(x, 2)) + (b * x) + c;
   }
 
