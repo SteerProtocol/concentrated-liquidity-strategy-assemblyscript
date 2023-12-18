@@ -929,6 +929,49 @@ export class PositionGenerator {
     "if": {
       "properties": {
         "liquidityShape": {
+          "const": "Triangle"
+        }
+      }
+    },
+    "then": {
+      "properties": {
+        "bins": {
+          "type": "number",
+          "title": "Positions",
+          "description": "The max number of positions the strategy will make to achieve the desired curve.",
+          "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
+        },
+        "amplitude": {
+          "type": "number",
+          "title": "Amplitude",
+          "description": "The height of the triangle given on the y-axis.",
+          "detailedDescription": "The amplitude of a triangle wave refers to the distance from the baseline (midpoint) of the wave to its peak (or trough). It represents the maximum deviation of the waveform from its average value."
+        },
+        "period": {
+          "type": "number",
+          "title": "Period",
+          "description": "The distance taken to complete a single cycle of the triangle pattern.",
+          "detailedDescription": "The period of a triangle wave is the time it takes for the wave to complete one full cycle. In other words, it's the distance along the time axis between two consecutive points that correspond to identical positions in the waveform."
+        },
+        "phase": {
+          "type": "number",
+          "title": "Phase",
+          "description": "X-axis offset to the waveform cycle.",
+          "detailedDescription": "Phase refers to the position of a waveform within its cycle at a specific point in time."
+        }
+      },
+      "required": [
+        "bins",
+        "amplitude",
+        "period",
+        "phase"
+      ]
+    }
+  },
+  {
+    "if": {
+      "properties": {
+        "liquidityShape": {
           "const": "LogarithmicDecay"
         }
       }
@@ -1087,49 +1130,3 @@ function difference(a: f64, b: f64): f64 {
 function abs(x: f64): f64 {
   return x < 0 ? -x : x;
 }
-
-
-// ** RETIRED TRIANGLE PARAMS **
-// {
-//   "if": {
-//     "properties": {
-//       "liquidityShape": {
-//         "const": "Triangle"
-//       }
-//     }
-//   },
-//   "then": {
-//     "properties": {
-//       "bins": {
-//         "type": "number",
-//         "title": "Positions",
-//         "description": "The max number of positions the strategy will make to achieve the desired curve.",
-//         "detailedDescription": "The strategy will attempt to make this number of positions, but can be limited by available range and pool spacing"
-//       },
-//       "amplitude": {
-//         "type": "number",
-//         "title": "Amplitude",
-//         "description": "The height of the triangle given on the y-axis.",
-//         "detailedDescription": "The amplitude of a triangle wave refers to the distance from the baseline (midpoint) of the wave to its peak (or trough). It represents the maximum deviation of the waveform from its average value."
-//       },
-//       "period": {
-//         "type": "number",
-//         "title": "Period",
-//         "description": "The distance taken to complete a single cycle of the triangle pattern.",
-//         "detailedDescription": "The period of a triangle wave is the time it takes for the wave to complete one full cycle. In other words, it's the distance along the time axis between two consecutive points that correspond to identical positions in the waveform."
-//       },
-//       "phase": {
-//         "type": "number",
-//         "title": "Phase",
-//         "description": "X-axis offset to the waveform cycle.",
-//         "detailedDescription": "Phase refers to the position of a waveform within its cycle at a specific point in time."
-//       }
-//     },
-//     "required": [
-//       "bins",
-//       "amplitude",
-//       "period",
-//       "phase"
-//     ]
-//   }
-// },
