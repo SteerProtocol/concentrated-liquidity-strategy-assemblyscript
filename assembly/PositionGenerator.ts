@@ -158,6 +158,7 @@ export class PositionGenerator {
     if (invert)  {positions = PositionGenerator.invertPositions(positions)}
     positions = PositionGenerator.floatNegativePositions(positions)
     positions = PositionGenerator.scaleWeightRange(positions)
+    positions = PositionGenerator.removeEmptyPositions(positions)
     positions = simplifyPositions(positions)
 
     PositionGenerator.checkTickBounds(positions)
@@ -249,6 +250,14 @@ export class PositionGenerator {
       const newPositions: Position[] = positions
       for (let i:i32 = 0; i < positions.length; i++) {
         newPositions[i].weight = newPositions[i].weight / divisor
+      }
+      return newPositions
+    }
+
+    static removeEmptyPositions(positions: Position[]): Position[] {
+      const newPositions: Position[] = positions
+      for (let i:i32 = 0; i < positions.length; i++) {
+        if (positions[i].weight != 0) newPositions.push(positions[i])
       }
       return newPositions
     }
